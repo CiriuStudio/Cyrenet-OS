@@ -38,7 +38,8 @@ SPDX-License-Identifier: Apache-2.0
 本项目采用 **按职责拆分 + REUSE / SPDX** 管理，详情见 [LICENSES/README.md](LICENSES/README.md) 与 [ADR-0001](docs/adr/0001-licensing-and-spdx-strategy.md)：
 
 - 构建配置、Profile、根文件系统 Overlay、补丁、脚本与测试：`GPL-2.0-only`
-- `themes/`、`packages/luci-app-cyrenet-*/`、文档与 Schema：`Apache-2.0`
+- `packages/`（含 `luci-app-cyrenet-*` 等自研应用包）：默认 `GPL-3.0-only`（有特定显式 `SPDX-License-Identifier` 标注时优先按显式标注执行）
+- `themes/`、文档与 Schema：`Apache-2.0`
 - 仓库元数据与占位文件：`CC0-1.0`
 - **所有新建源码与脚本必须在文件顶部添加 `SPDX-FileCopyrightText` 与 `SPDX-License-Identifier` 头**；派生自第三方或上游的文件必须完整保留原有版权声明与许可证，禁止用单一许可证粗暴覆盖第三方代码。
 

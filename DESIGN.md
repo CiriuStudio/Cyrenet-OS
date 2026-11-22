@@ -14,9 +14,9 @@ SPDX-License-Identifier: Apache-2.0
 | 系统层 | 核心职责 | 仓库映射目录 | 默认 SPDX 许可证 |
 |---|---|---|---|
 | **ImmortalWrt 基础系统** | 协议栈、`netifd`、`firewall4`、APK 包管理、内核与驱动 | `manifests/upstream.lock.yaml`、`patches/`、`config/`、`files/` | `GPL-2.0-only` |
-| **Cyrenet Feature Layer** | 第三方服务编排、启停控制、依赖与冲突检测 | `profiles/`、`packages/luci-app-cyrenet-{dns,network,performance}/` | 配置文件 `GPL-2.0-only` / 自研包 `Apache-2.0` |
+| **Cyrenet Feature Layer** | 第三方服务编排、启停控制、依赖与冲突检测 | `profiles/`、`packages/luci-app-cyrenet-{dns,network,performance}/` | 配置文件 `GPL-2.0-only` / 自研包默认 `GPL-3.0-only`（显式标注优先） |
 | **Cyrenet LuCI** | 统一视觉语言、Dashboard、菜单信息架构 | `themes/luci-theme-cyrenet/` | `Apache-2.0` |
-| **Cyrenet Management** | 实时监控、网络诊断、脱敏报告、配置备份与 OTA | `packages/luci-app-cyrenet-{diagnostics,backup,updater}/` | `Apache-2.0` |
+| **Cyrenet Management** | 实时监控、网络诊断、脱敏报告、配置备份与 OTA | `packages/luci-app-cyrenet-{diagnostics,backup,updater}/` | 默认 `GPL-3.0-only`（显式标注优先） |
 | **Cyrenet Build & Release** | 配置合并、BOM 审计、CI/CD 测试构建与 Serverless OTA | `scripts/`、`.github/workflows/`、`manifests/`、`release/`、`tests/` | 构建/测试 `GPL-2.0-only` / 元数据 `Apache-2.0` |
 
 ---
@@ -115,7 +115,7 @@ CYRENET_EXPERIMENTAL="false"
 
 ### 5.1 自研软件包清单与标准布局
 
-自研功能统一拆分到 `packages/` 下独立 APK 软件包（默认 `Apache-2.0`）：
+自研功能统一拆分到 `packages/` 下独立 APK 软件包（默认 `GPL-3.0-only`，特定包或源码文件存在显式 SPDX 标注时以显式标注优先）：
 
 - `luci-app-cyrenet-dns`（DNS 与广告过滤中心）
 - `luci-app-cyrenet-updater`（OTA 与固件更新客户端）

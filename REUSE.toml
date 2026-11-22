@@ -25,8 +25,15 @@ SPDX-License-Identifier = "GPL-2.0-only"
 
 [[annotations]]
 path = [
+    "packages/**",
+]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Cyrenet OS Contributors"
+SPDX-License-Identifier = "GPL-3.0-only"
+
+[[annotations]]
+path = [
     "themes/**",
-    "packages/luci-app-cyrenet-*/**",
     "docs/**",
     "*.md",
     "*/README.md",

@@ -35,10 +35,11 @@ SPDX-License-Identifier: Apache-2.0
 仓库采用按职责拆分的 SPDX / REUSE 许可证体系（详见 [LICENSES/README.md](LICENSES/README.md) 与 [REUSE.toml](REUSE.toml)）：
 
 - **`GPL-2.0-only`**：`config/`、`profiles/`、`files/`、`patches/`、`scripts/`、`tests/`、`.github/workflows/` 及核心构建相关文件。
-- **`Apache-2.0`**：`themes/`、`packages/luci-app-cyrenet-*/`、`docs/`、`*.md`、`manifests/`、`release/`。
+- **`GPL-3.0-only`**：`packages/`（含 `luci-app-cyrenet-*` 等自研应用包，有特定显式 `SPDX-License-Identifier` 标注时优先按显式标注执行，否则均默认为 `GPL-3.0-only`）。
+- **`Apache-2.0`**：`themes/`、`docs/`、`*.md`、`manifests/`、`release/`。
 - **`CC0-1.0`**：`.gitignore`、`.gitattributes`、`.editorconfig`、`REUSE.toml`、`**/.gitkeep`。
 - **所有新建源码、脚本、配置、文档必须在头部包含 `SPDX-FileCopyrightText` 与 `SPDX-License-Identifier` 声明**。
-- **严禁混编边界**：禁止将 `Apache-2.0` 与 `GPL-2.0-only` 代码静态链接；派生自 GPL 上游的文件必须显式标注 `GPL-2.0-only`。
+- **严禁混编边界**：禁止将 `GPL-3.0-only` 或 `Apache-2.0` 代码与 `GPL-2.0-only` 二进制静态链接；派生自 `GPL-2.0-only` 上游的文件必须显式标注 `GPL-2.0-only`。
 - **第三方包独立登记**：第三方源码与包不得统一覆盖许可证，必须在 `manifests/bom/*.yaml` 中准确记录其上游 `license`、仓库与 Commit。
 
 ---

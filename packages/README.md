@@ -9,8 +9,8 @@ SPDX-License-Identifier: Apache-2.0
 
 ## 许可证约定
 
-- Cyrenet 自研 LuCI 应用包（`luci-app-cyrenet-*`）默认采用 **`Apache-2.0`**（详见 [ADR-0001](../docs/adr/0001-licensing-and-spdx-strategy.md)）。
-- 如引入或派生源自 `GPL-2.0-only` 的非 LuCI 系统组件或内核相关脚本，必须在对应包目录与源码头显式标注 `SPDX-License-Identifier: GPL-2.0-only`，且不得与 `Apache-2.0` 模块静态链接。
+- Cyrenet 自研应用包（含 `luci-app-cyrenet-*` 及 `packages/` 下其他自研包）以 **`GPL-3.0-only`** 为主：**当包或源码文件内有特定显式 `SPDX-License-Identifier` 标注时优先按显式标注执行，否则均默认为 `GPL-3.0-only`**（详见 [ADR-0001](../docs/adr/0001-licensing-and-spdx-strategy.md) 与 [REUSE.toml](../REUSE.toml)）。
+- 如引入或派生源自 `GPL-2.0-only` 的上游组件或内核相关脚本，必须在对应包目录与源码头显式标注 `SPDX-License-Identifier: GPL-2.0-only`，且不得将 `GPL-3.0-only` / `Apache-2.0` 模块与 `GPL-2.0-only` 二进制静态链接。
 
 ## 计划自研包清单（对应 PROJECT.md §10）
 
