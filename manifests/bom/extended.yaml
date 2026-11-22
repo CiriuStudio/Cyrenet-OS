@@ -1,0 +1,98 @@
+# SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# Cyrenet OS Extended Profile Delta Package BOM (M0 Initial Baseline).
+# Inherits all packages from core.yaml and standard.yaml.
+# Policy: multi-WAN, multi-dial, historical L2 metrics, and L3 Prometheus exporter default to disabled.
+
+schema_version: 1
+profile: "extended"
+upstream_version: "25.12.2"
+
+packages:
+  - name: "mwan3"
+    version: "2.12.0-3"
+    source_repo: "https://github.com/immortalwrt/packages.git"
+    source_commit: "84bd86384928955b568988ca0e09e2c78c75173d"
+    license: "GPL-2.0-only"
+    dependencies: ["ip-full", "ipset", "iptables-nft", "jshn"]
+    profiles: ["extended"]
+    default_enabled: false
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: []
+
+  - name: "luci-app-mwan3"
+    version: "25.12.2-feed"
+    source_repo: "https://github.com/immortalwrt/luci.git"
+    source_commit: "d6167ea0645cbd1327708d85f94824f42d0eb872"
+    license: "GPL-2.0-only"
+    dependencies: ["luci-base", "mwan3"]
+    profiles: ["extended"]
+    default_enabled: false
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: []
+
+  - name: "kmod-macvlan"
+    version: "6.12.103"
+    source_repo: "https://github.com/immortalwrt/immortalwrt"
+    source_commit: "4fc16f2985a358bd43bb522e43f05395fcbd6ed5"
+    license: "GPL-2.0-only"
+    dependencies: []
+    profiles: ["extended"]
+    default_enabled: false
+    is_kmod: true
+    requires_extra_config: false
+    conflicts: []
+
+  - name: "luci-app-syncdial"
+    version: "2.0-25"
+    source_repo: "https://github.com/immortalwrt/luci.git"
+    source_commit: "d6167ea0645cbd1327708d85f94824f42d0eb872"
+    license: "GPL-2.0-only"
+    dependencies: ["luci-compat", "kmod-macvlan", "luci-app-mwan3"]
+    profiles: ["extended"]
+    default_enabled: false
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: []
+    notes: "Verify IPv6 compatibility independently in M6"
+
+  - name: "collectd"
+    version: "5.12.0-56"
+    source_repo: "https://github.com/immortalwrt/packages.git"
+    source_commit: "84bd86384928955b568988ca0e09e2c78c75173d"
+    license: "MIT AND GPL-2.0-or-later"
+    dependencies: ["libpthread", "zlib"]
+    profiles: ["extended"]
+    default_enabled: false
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: []
+    notes: "L2 historical metrics; configurable storage path to avoid overlay wear"
+
+  - name: "luci-app-statistics"
+    version: "25.12.2-feed"
+    source_repo: "https://github.com/immortalwrt/luci.git"
+    source_commit: "d6167ea0645cbd1327708d85f94824f42d0eb872"
+    license: "Apache-2.0"
+    dependencies: ["luci-base", "collectd"]
+    profiles: ["extended"]
+    default_enabled: false
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: []
+
+  - name: "prometheus-node-exporter-lua"
+    version: "2026.06.05-1"
+    source_repo: "https://github.com/immortalwrt/packages.git"
+    source_commit: "84bd86384928955b568988ca0e09e2c78c75173d"
+    license: "Apache-2.0"
+    dependencies: ["lua", "luasocket", "uci"]
+    profiles: ["extended"]
+    default_enabled: false
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: []
+    notes: "L3 external metrics exporter; listener default disabled and blocked on WAN"

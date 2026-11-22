@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+# SPDX-License-Identifier: GPL-2.0-only
+
+name: Dependency Audit & M0 Gate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-and-unit-tests:
+    name: Repo Lint, ShellCheck & Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python validation dependencies
+        run: python3 -m pip install --no-cache-dir pyyaml jsonschema
+
+      - name: Run strict repository audit
+        run: python3 scripts/lint/check-repo.py --strict
+
+      - name: Run ShellCheck on build scripts
+        run: shellcheck scripts/build/*.sh
+
+      - name: Run M0 unit tests
+        run: python3 -m unittest discover -s tests/unit -v
+
+      - name: Smoke test layered config merge across profiles
+        run: |
+          mkdir -p /tmp/cyrenet-smoke
+          for profile in core standard extended; do
+            bash scripts/build/merge-config.sh \
+              --profile "$profile" \
+              --output "/tmp/cyrenet-smoke/${profile}.config"
+            test -s "/tmp/cyrenet-smoke/${profile}.config"
+          done
+
+      - name: Dry-run deterministic upstream fetch
+        run: bash scripts/build/fetch-upstream.sh --dry-run

@@ -5,11 +5,13 @@ SPDX-License-Identifier: Apache-2.0
 
 # 软件包物料清单目录（`manifests/bom/`）
 
-本目录将在 **M0 Step 3** 填充三个发行版本的初始物料清单（BOM），并接受 [`../schemas/bom.schema.json`](../schemas/bom.schema.json) 自动化结构校验：
+本目录维护三个发行版本的软件包物料清单（BOM），采用与 `profiles/` 一致的**增量继承模型**，并由 [`../../scripts/lint/check-repo.py`](../../scripts/lint/check-repo.py) 依据 [`../schemas/bom.schema.json`](../schemas/bom.schema.json) 自动校验：
 
-- `core.yaml` — Cyrenet Core 预装包清单
-- `standard.yaml` — Cyrenet Standard 预装包清单（或增量清单）
-- `extended.yaml` — Cyrenet Extended 预装包清单（或增量清单）
+- [`core.yaml`](core.yaml) — Cyrenet Core 基础及核心网络功能包清单
+- [`standard.yaml`](standard.yaml) — Cyrenet Standard 相对 Core 的增量包清单
+- [`extended.yaml`](extended.yaml) — Cyrenet Extended 相对 Standard 的增量包清单
+
+> 随着 M1–M6 自研组件（`luci-theme-cyrenet`、`luci-app-cyrenet-*`）与实际 `make defconfig` 解析的传递依赖落地，各 BOM 将同步扩充完整记录。
 
 ## 审计规范（对应 PROJECT.md §11.3 / §16.4）
 

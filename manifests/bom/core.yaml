@@ -1,0 +1,208 @@
+# SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# Cyrenet OS Core Profile Package BOM (M0 Initial Baseline).
+# Inherited by Standard and Extended profiles.
+
+schema_version: 1
+profile: "core"
+upstream_version: "25.12.2"
+
+packages:
+  - name: "dnsmasq-full"
+    version: "25.12.2-base"
+    source_repo: "https://github.com/immortalwrt/immortalwrt"
+    source_commit: "4fc16f2985a358bd43bb522e43f05395fcbd6ed5"
+    license: "GPL-2.0-only"
+    dependencies: ["libc", "ubus"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: true
+    is_kmod: false
+    requires_extra_config: false
+    conflicts: ["dnsmasq"]
+    notes: "Core DHCP and local DNS daemon; replaces stripped dnsmasq"
+
+  - name: "firewall4"
+    version: "25.12.2-base"
+    source_repo: "https://github.com/immortalwrt/immortalwrt"
+    source_commit: "4fc16f2985a358bd43bb522e43f05395fcbd6ed5"
+    license: "ISC"
+    dependencies: ["nftables-json", "ucode"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: true
+    is_kmod: false
+    requires_extra_config: false
+    conflicts: ["firewall"]
+    notes: "Native nftables firewall manager"
+
+  - name: "nftables-json"
+    version: "25.12.2-base"
+    source_repo: "https://github.com/immortalwrt/immortalwrt"
+    source_commit: "4fc16f2985a358bd43bb522e43f05395fcbd6ed5"
+    license: "GPL-2.0-only"
+    dependencies: ["libnftnl", "jansson"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: true
+    is_kmod: false
+    requires_extra_config: false
+    conflicts: []
+
+  - name: "odhcp6c"
+    version: "25.12.2-base"
+    source_repo: "https://github.com/immortalwrt/immortalwrt"
+    source_commit: "4fc16f2985a358bd43bb522e43f05395fcbd6ed5"
+    license: "GPL-2.0-only"
+    dependencies: ["libc", "ubox", "ubus"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: true
+    is_kmod: false
+    requires_extra_config: false
+    conflicts: []
+
+  - name: "odhcpd-ipv6only"
+    version: "25.12.2-base"
+    source_repo: "https://github.com/immortalwrt/immortalwrt"
+    source_commit: "4fc16f2985a358bd43bb522e43f05395fcbd6ed5"
+    license: "GPL-2.0-only"
+    dependencies: ["libc", "ubox", "ubus", "libnl-tiny"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: true
+    is_kmod: false
+    requires_extra_config: false
+    conflicts: ["odhcpd"]
+
+  - name: "ppp-mod-pppoe"
+    version: "25.12.2-base"
+    source_repo: "https://github.com/immortalwrt/immortalwrt"
+    source_commit: "4fc16f2985a358bd43bb522e43f05395fcbd6ed5"
+    license: "GPL-2.0-only"
+    dependencies: ["ppp", "kmod-pppoe"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: true
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: []
+    notes: "PPPoE WAN dialer support; credentials configured by user only"
+
+  - name: "kmod-nft-offload"
+    version: "6.12.103"
+    source_repo: "https://github.com/immortalwrt/immortalwrt"
+    source_commit: "4fc16f2985a358bd43bb522e43f05395fcbd6ed5"
+    license: "GPL-2.0-only"
+    dependencies: ["kmod-nf-flow"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: false
+    is_kmod: true
+    requires_extra_config: true
+    conflicts: ["sqm-scripts"]
+    notes: "Software flow offloading default disabled per PROJECT.md §7.2"
+
+  - name: "luci-ssl"
+    version: "25.12.2-feed"
+    source_repo: "https://github.com/immortalwrt/luci.git"
+    source_commit: "d6167ea0645cbd1327708d85f94824f42d0eb872"
+    license: "Apache-2.0"
+    dependencies: ["luci", "libustream-openssl", "px5g-mbedtls"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: true
+    is_kmod: false
+    requires_extra_config: false
+    conflicts: []
+
+  - name: "luci-i18n-base-zh-cn"
+    version: "25.12.2-feed"
+    source_repo: "https://github.com/immortalwrt/luci.git"
+    source_commit: "d6167ea0645cbd1327708d85f94824f42d0eb872"
+    license: "Apache-2.0"
+    dependencies: ["luci-base"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: true
+    is_kmod: false
+    requires_extra_config: false
+    conflicts: []
+
+  - name: "ddns-scripts"
+    version: "2.8.3-5"
+    source_repo: "https://github.com/immortalwrt/packages.git"
+    source_commit: "84bd86384928955b568988ca0e09e2c78c75173d"
+    license: "GPL-2.0-only"
+    dependencies: ["ddns-scripts-services", "uclient-fetch"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: false
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: []
+
+  - name: "luci-app-ddns"
+    version: "25.12.2-feed"
+    source_repo: "https://github.com/immortalwrt/luci.git"
+    source_commit: "d6167ea0645cbd1327708d85f94824f42d0eb872"
+    license: "Apache-2.0"
+    dependencies: ["luci-base", "ddns-scripts"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: false
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: []
+
+  - name: "adguardhome"
+    version: "0.107.78-1"
+    source_repo: "https://github.com/immortalwrt/packages.git"
+    source_commit: "84bd86384928955b568988ca0e09e2c78c75173d"
+    license: "GPL-3.0-only"
+    dependencies: ["ca-bundle"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: true
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: ["adblock-fast-port53"]
+    notes: "Default DNS adblock engine per PROJECT.md §5.2; mutually exclusive on port 53 with adblock-fast"
+
+  - name: "adblock-fast"
+    version: "1.2.4-4"
+    source_repo: "https://github.com/immortalwrt/packages.git"
+    source_commit: "84bd86384928955b568988ca0e09e2c78c75173d"
+    license: "AGPL-3.0-or-later"
+    dependencies: ["dnsmasq-full", "uclient-fetch"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: false
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: ["adguardhome-port53"]
+    notes: "Alternative DNS adblock engine; disabled by default while AdGuard Home is active"
+
+  - name: "luci-app-adblock-fast"
+    version: "1.2.4-4"
+    source_repo: "https://github.com/immortalwrt/luci.git"
+    source_commit: "d6167ea0645cbd1327708d85f94824f42d0eb872"
+    license: "AGPL-3.0-or-later"
+    dependencies: ["luci-base", "adblock-fast", "rpcd-mod-ucode"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: false
+    is_kmod: false
+    requires_extra_config: true
+    conflicts: []
+
+  - name: "nlbwmon"
+    version: "25.12.2-feed-r1"
+    source_repo: "https://github.com/immortalwrt/packages.git"
+    source_commit: "84bd86384928955b568988ca0e09e2c78c75173d"
+    license: "ISC"
+    dependencies: ["libnl-tiny", "kmod-nf-conntrack-netlink"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: true
+    is_kmod: false
+    requires_extra_config: false
+    conflicts: []
+
+  - name: "luci-app-nlbwmon"
+    version: "25.12.2-feed"
+    source_repo: "https://github.com/immortalwrt/luci.git"
+    source_commit: "d6167ea0645cbd1327708d85f94824f42d0eb872"
+    license: "Apache-2.0"
+    dependencies: ["luci-base", "luci-lib-chartjs", "nlbwmon"]
+    profiles: ["core", "standard", "extended"]
+    default_enabled: true
+    is_kmod: false
+    requires_extra_config: false
+    conflicts: []

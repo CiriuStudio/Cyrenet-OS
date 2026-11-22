@@ -1,63 +1,69 @@
 # SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
 # SPDX-License-Identifier: Apache-2.0
 #
-# Cyrenet OS Upstream & Third-Party Source Lock (M0 DRAFT).
-# All "TBD" commit hashes and verification timestamps MUST be resolved against
-# authoritative upstream repositories in M0 Step 3 before any build runs.
+# Cyrenet OS Upstream & Third-Party Source Lock
+# Verified against ImmortalWrt v25.12.2 (openwrt-25.12) and pinned upstream tags.
 
 schema_version: 1
-verified_at: "TBD"
+verified_at: "2026-11-22T11:38:00Z"
 
 upstream:
   name: "immortalwrt"
   branch: "openwrt-25.12"
   tag: "v25.12.2"
   repo_url: "https://github.com/immortalwrt/immortalwrt"
-  commit: "TBD"
+  commit: "4fc16f2985a358bd43bb522e43f05395fcbd6ed5"
   license: "GPL-2.0-only"
 
 feeds:
   - name: "packages"
-    repo_url: "https://github.com/immortalwrt/packages"
+    repo_url: "https://github.com/immortalwrt/packages.git"
     branch: "openwrt-25.12"
-    commit: "TBD"
+    commit: "84bd86384928955b568988ca0e09e2c78c75173d"
     license: "Mixed (per-package SPDX tracked in BOM)"
-    notes: "Verify exact feed URL and commit pinned by ImmortalWrt v25.12.2 feeds.conf.default"
+    notes: "Pinned in immortalwrt v25.12.2 feeds.conf.default"
 
   - name: "luci"
-    repo_url: "https://github.com/immortalwrt/luci"
+    repo_url: "https://github.com/immortalwrt/luci.git"
     branch: "openwrt-25.12"
-    commit: "TBD"
-    license: "Apache-2.0 (mixed per-package)"
-    notes: "Verify exact feed URL and commit pinned by ImmortalWrt v25.12.2 feeds.conf.default"
+    commit: "d6167ea0645cbd1327708d85f94824f42d0eb872"
+    license: "Apache-2.0 (mixed per-package tracked in BOM)"
+    notes: "Pinned in immortalwrt v25.12.2 feeds.conf.default"
 
   - name: "routing"
-    repo_url: "https://github.com/immortalwrt/routing"
+    repo_url: "https://github.com/openwrt/routing.git"
     branch: "openwrt-25.12"
-    commit: "TBD"
+    commit: "e49d76035aafb85ddc993b59271d8c7ba56b5362"
     license: "Mixed (per-package SPDX tracked in BOM)"
-    notes: "Verify exact feed URL and commit pinned by ImmortalWrt v25.12.2 feeds.conf.default"
+    notes: "Pinned in immortalwrt v25.12.2 feeds.conf.default"
 
   - name: "telephony"
-    repo_url: "https://github.com/immortalwrt/telephony"
+    repo_url: "https://github.com/openwrt/telephony.git"
     branch: "openwrt-25.12"
-    commit: "TBD"
+    commit: "2618106d5846a4a542fdf5809f0d3ed228ce439b"
     license: "Mixed (per-package SPDX tracked in BOM)"
-    notes: "Verify exact feed URL and commit pinned by ImmortalWrt v25.12.2 feeds.conf.default"
+    notes: "Pinned in immortalwrt v25.12.2 feeds.conf.default"
+
+  - name: "video"
+    repo_url: "https://github.com/openwrt/video.git"
+    branch: "openwrt-25.12"
+    commit: "094bf58da6682f895255a35a84349a79dab4bf95"
+    license: "Mixed (per-package SPDX tracked in BOM)"
+    notes: "Pinned in immortalwrt v25.12.2 feeds.conf.default"
 
 third_party:
   - name: "luci-theme-argon"
     repo_url: "https://github.com/jerrykuku/luci-theme-argon"
-    ref: "3.x (TBD exact release tag)"
-    commit: "TBD"
+    ref: "v3.1.4"
+    commit: "c5c0873e122dc767c7ab0198c8bffc6e952b5cfb"
     license: "Apache-2.0"
     profiles: ["core", "standard", "extended"]
-    notes: "Fork baseline for themes/luci-theme-cyrenet"
+    notes: "Fork baseline for themes/luci-theme-cyrenet (M2)"
 
   - name: "OpenClash"
     repo_url: "https://github.com/vernesong/OpenClash"
-    ref: "TBD"
-    commit: "TBD"
+    ref: "v0.48.002"
+    commit: "e553e82e01c697aefbe1555261a503f425e00ccd"
     license: "MIT"
     profiles: ["standard", "extended"]
-    notes: "Must audit Mihomo Core compatibility, APK support, and firewall4 rules in M3"
+    notes: "Integrated in M3 after ADR-0004 audits Mihomo Core, APK, and firewall4 compatibility"
