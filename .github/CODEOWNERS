@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+# SPDX-License-Identifier: Apache-2.0
+
+# Cyrenet OS CODEOWNERS template
+# Once the repository is hosted on GitHub and maintainer handles are confirmed,
+# uncomment the lines below and replace @OWNER with the actual GitHub usernames/teams.
+#
+# High-risk areas defined in PROJECT.md §20.4:
+#
+# *                                      @OWNER
+# /PROJECT.md                            @OWNER
+# /DESIGN.md                             @OWNER
+# /LICENSES/                             @OWNER
+# /REUSE.toml                            @OWNER
+# /.github/                              @OWNER
+# /manifests/                            @OWNER
+# /patches/                              @OWNER
+# /release/                              @OWNER
+# /scripts/                              @OWNER
+# /packages/luci-app-cyrenet-updater/    @OWNER
+# /packages/luci-app-cyrenet-dns/        @OWNER
+# /packages/luci-app-cyrenet-backup/     @OWNER
+# /packages/luci-app-cyrenet-network/    @OWNER

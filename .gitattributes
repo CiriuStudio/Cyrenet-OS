@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+# SPDX-License-Identifier: CC0-1.0
+
+# Enforce LF line endings across all text files (critical for OpenWrt init.d, patches, and Makefiles)
+* text=auto eol=lf
+
+*.sh text eol=lf
+*.bash text eol=lf
+*.py text eol=lf
+*.lua text eol=lf
+*.uc text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
+*.config text eol=lf
+*.patch text eol=lf
+Makefile text eol=lf
+*.mk text eol=lf
+files/** text eol=lf
+profiles/**/files/** text eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.gz binary
+*.xz binary
+*.zst binary
+*.tar binary
+*.img binary
+*.apk binary

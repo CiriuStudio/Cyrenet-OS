@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cyrenet-os.example/schemas/ota-manifest.schema.json",
+  "title": "Cyrenet OS Serverless OTA Manifest Schema",
+  "description": "Schema for GitHub Pages OTA update manifests enforcing all 14 required fields from PROJECT.md §13.2.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "channel",
+    "upstream_version",
+    "profile",
+    "target",
+    "image_type",
+    "config_schema_version",
+    "size_bytes",
+    "download_url",
+    "sha256",
+    "signature",
+    "min_upgrade_version",
+    "released_at",
+    "changelog_url"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?$",
+      "description": "Semantic version (e.g., 1.0.0 or 1.0.0-beta.1)."
+    },
+    "channel": {
+      "type": "string",
+      "enum": ["nightly", "beta", "stable"]
+    },
+    "upstream_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile": {
+      "type": "string",
+      "enum": ["core", "standard", "extended"]
+    },
+    "target": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Target architecture/subtarget (e.g., x86/64)."
+    },
+    "image_type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Firmware image format identifier (e.g., generic-squashfs-combined-efi)."
+    },
+    "config_schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "size_bytes": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "download_url": {
+      "type": "string",
+      "pattern": "^https://"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "signature": {
+      "description": "Cryptographic signature covering firmware digest and authorization metadata.",
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "key_id", "value"],
+          "properties": {
+            "algorithm": { "type": "string", "minLength": 1 },
+            "key_id": { "type": "string", "minLength": 1 },
+            "value": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "min_upgrade_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?$"
+    },
+    "released_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "changelog_url": {
+      "type": "string",
+      "pattern": "^https://"
+    },
+    "mirrors": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^https://"
+      },
+      "description": "Optional HTTPS mirror URLs; artifacts still require identical SHA256 and signature checks."
+    },
+    "experimental": {
+      "type": "string",
+      "description": "Experimental flavor marker (e.g., 'none' or 'sfe'). Non-standard builds must never auto-update onto standard channels."
+    },
+    "kernel_abi": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional kernel ABI string for compatibility auditing."
+    }
+  }
+}

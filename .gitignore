@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+# SPDX-License-Identifier: CC0-1.0
+
+# ImmortalWrt / OpenWrt build directories & state
+/upstream/
+/build_dir/
+/staging_dir/
+/tmp/
+/bin/
+/dl/
+/feeds/
+/logs/
+*.log
+/.config
+/.config.old
+/feeds.conf
+
+# Built firmware images & packages
+*.img
+*.img.gz
+*.img.xz
+*.vmdk
+*.vhdx
+*.qcow2
+*.iso
+*.apk
+*.ipk
+
+# Secrets, private signing keys & credentials (NEVER commit private keys)
+*.key
+*.pem
+*.priv
+*.sec
+.env
+.env.*
+release/keys/*.priv
+release/keys/*.key
+release/keys/*.sec
+
+# Python / Node / OS / Editor artifacts
+__pycache__/
+.pytest_cache/
+node_modules/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

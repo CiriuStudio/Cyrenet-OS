@@ -1,0 +1,63 @@
+# SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# Cyrenet OS Upstream & Third-Party Source Lock (M0 DRAFT).
+# All "TBD" commit hashes and verification timestamps MUST be resolved against
+# authoritative upstream repositories in M0 Step 3 before any build runs.
+
+schema_version: 1
+verified_at: "TBD"
+
+upstream:
+  name: "immortalwrt"
+  branch: "openwrt-25.12"
+  tag: "v25.12.2"
+  repo_url: "https://github.com/immortalwrt/immortalwrt"
+  commit: "TBD"
+  license: "GPL-2.0-only"
+
+feeds:
+  - name: "packages"
+    repo_url: "https://github.com/immortalwrt/packages"
+    branch: "openwrt-25.12"
+    commit: "TBD"
+    license: "Mixed (per-package SPDX tracked in BOM)"
+    notes: "Verify exact feed URL and commit pinned by ImmortalWrt v25.12.2 feeds.conf.default"
+
+  - name: "luci"
+    repo_url: "https://github.com/immortalwrt/luci"
+    branch: "openwrt-25.12"
+    commit: "TBD"
+    license: "Apache-2.0 (mixed per-package)"
+    notes: "Verify exact feed URL and commit pinned by ImmortalWrt v25.12.2 feeds.conf.default"
+
+  - name: "routing"
+    repo_url: "https://github.com/immortalwrt/routing"
+    branch: "openwrt-25.12"
+    commit: "TBD"
+    license: "Mixed (per-package SPDX tracked in BOM)"
+    notes: "Verify exact feed URL and commit pinned by ImmortalWrt v25.12.2 feeds.conf.default"
+
+  - name: "telephony"
+    repo_url: "https://github.com/immortalwrt/telephony"
+    branch: "openwrt-25.12"
+    commit: "TBD"
+    license: "Mixed (per-package SPDX tracked in BOM)"
+    notes: "Verify exact feed URL and commit pinned by ImmortalWrt v25.12.2 feeds.conf.default"
+
+third_party:
+  - name: "luci-theme-argon"
+    repo_url: "https://github.com/jerrykuku/luci-theme-argon"
+    ref: "3.x (TBD exact release tag)"
+    commit: "TBD"
+    license: "Apache-2.0"
+    profiles: ["core", "standard", "extended"]
+    notes: "Fork baseline for themes/luci-theme-cyrenet"
+
+  - name: "OpenClash"
+    repo_url: "https://github.com/vernesong/OpenClash"
+    ref: "TBD"
+    commit: "TBD"
+    license: "MIT"
+    profiles: ["standard", "extended"]
+    notes: "Must audit Mihomo Core compatibility, APK support, and firewall4 rules in M3"

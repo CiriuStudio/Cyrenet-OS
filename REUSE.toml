@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+# SPDX-License-Identifier: CC0-1.0
+
+version = 1
+
+# Note:
+# - Original project files (including PROJECT.md) carry Cyrenet OS Contributors copyright.
+# - Forked or third-party files MUST retain their upstream copyright notices and exact
+#   SPDX-License-Identifier headers inside the files themselves. Because precedence is
+#   "closest", explicit per-file SPDX headers override these directory-level defaults.
+
+[[annotations]]
+path = [
+    "config/**",
+    "profiles/**",
+    "files/**",
+    "patches/**",
+    "scripts/**",
+    "tests/**",
+    ".github/workflows/**",
+]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Cyrenet OS Contributors"
+SPDX-License-Identifier = "GPL-2.0-only"
+
+[[annotations]]
+path = [
+    "themes/**",
+    "packages/luci-app-cyrenet-*/**",
+    "docs/**",
+    "*.md",
+    "*/README.md",
+    "*/*/README.md",
+    "manifests/**",
+    "release/**",
+    ".github/pull_request_template.md",
+    ".github/CODEOWNERS",
+]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Cyrenet OS Contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = [
+    ".gitignore",
+    ".gitattributes",
+    ".editorconfig",
+    "REUSE.toml",
+    "**/.gitkeep",
+]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Cyrenet OS Contributors"
+SPDX-License-Identifier = "CC0-1.0"
