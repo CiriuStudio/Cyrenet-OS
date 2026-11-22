@@ -12,8 +12,8 @@ Cyrenet OS 采用 **按职责拆分 + SPDX / REUSE 显式声明** 的开源许�
 | 目录 / 文件范围 | 默认 SPDX 标识 | 适用原因 | 完整文本 |
 |---|---|---|---|
 | 根 `LICENSE`、`config/`、`profiles/`、`files/`、`patches/`、`scripts/`、`tests/`、`.github/workflows/` | `GPL-2.0-only` | 与上游 ImmortalWrt / OpenWrt 构建系统与基础脚本保持一致 | [GPL-2.0-only.txt](GPL-2.0-only.txt) |
-| `packages/`（含 `luci-app-cyrenet-*` 等自研应用包） | `GPL-3.0-only` | 自研应用包以 GPL v3 为主；**包或文件中有特定显式标注时优先，否则默认 `GPL-3.0-only`** | [GPL-3.0-only.txt](GPL-3.0-only.txt) |
-| `themes/` | `Apache-2.0` | 与上游 LuCI 及 `luci-theme-argon`（Argon 3.x Fork）保持一致 | [Apache-2.0.txt](Apache-2.0.txt) |
+| `packages/`（含 `luci-app-cyrenet-*` 等自研应用包）与 `ui/`（原创功能前端源码） | `GPL-3.0-only` | 自研应用与业务前端以 GPL v3 为主；**包或文件中有特定显式标注时优先（如入库的 shadcn/ui MIT 组件），否则默认 `GPL-3.0-only`** | [GPL-3.0-only.txt](GPL-3.0-only.txt) |
+| `themes/` 与 `design/` | `Apache-2.0` | 与上游 LuCI、`luci-theme-argon`（Argon 3.x Fork）及共享视觉 Token/资产一致 | [Apache-2.0.txt](Apache-2.0.txt) |
 | `docs/`、根与各目录 `*.md`、`manifests/`、`release/`、`.github/pull_request_template.md`、`.github/CODEOWNERS` | `Apache-2.0` | 文档、Schema 与发布元数据 | [Apache-2.0.txt](Apache-2.0.txt) |
 | `.gitignore`、`.gitattributes`、`.editorconfig`、`REUSE.toml`、`**/.gitkeep` | `CC0-1.0` | 仓库基础设施与无版权门槛的空白占位文件 | [CC0-1.0.txt](CC0-1.0.txt) |
 

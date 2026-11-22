@@ -63,6 +63,8 @@ def iter_repo_files(repo_root: pathlib.Path) -> list[pathlib.Path]:
         rel_parts = path.relative_to(repo_root).parts
         if any(part in ignored_dirs for part in rel_parts) or rel_parts[0] in ignored_root_dirs:
             continue
+        if rel_parts[:2] == ("scripts", "temp") or path.name.endswith((".tmp.sh", ".local.sh")):
+            continue
         if path.suffix in {".pyc", ".pyo"}:
             continue
         files.append(path)
@@ -174,7 +176,7 @@ def check_reuse_and_spdx(repo_root: pathlib.Path, files: list[pathlib.Path], err
 
     for path in files:
         rel = path.relative_to(repo_root).as_posix()
-        if rel in ("PROJECT.md", "UIDESIGN.md", "LICENSE") or (rel.startswith("LICENSES/") and rel.endswith(".txt")):
+        if rel in ("PROJECT.md", "LICENSE") or (rel.startswith("LICENSES/") and rel.endswith(".txt")):
             continue
         if path.suffix in BINARY_EXTENSIONS or path.suffix == ".json":
             continue

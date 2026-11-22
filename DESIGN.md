@@ -5,7 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 
 # DESIGN.md — Cyrenet OS 工程技术契约与架构总览
 
-本文件定义 Cyrenet OS 在 [PROJECT.md](PROJECT.md)（V1.0 冻结产品基线）之下的工程实施契约、跨模块接口标准与待验证技术登记表。后续不复述产品需求，仅约定各模块必须共同遵守的技术边界。
+本文件定义 Cyrenet OS 在 [PROJECT.md](PROJECT.md)（V1.0 冻结产品基线）之下的工程实施契约、跨模块接口标准与待验证技术登记表；UI 与前端设计系统详规范见 [UIDESIGN.md](UIDESIGN.md) 与 [ADR-0002](docs/adr/0002-dual-layer-ui-architecture.md)。
 
 ---
 
@@ -15,8 +15,8 @@ SPDX-License-Identifier: Apache-2.0
 |---|---|---|---|
 | **ImmortalWrt 基础系统** | 协议栈、`netifd`、`firewall4`、APK 包管理、内核与驱动 | `manifests/upstream.lock.yaml`、`patches/`、`config/`、`files/` | `GPL-2.0-only` |
 | **Cyrenet Feature Layer** | 第三方服务编排、启停控制、依赖与冲突检测 | `profiles/`、`packages/luci-app-cyrenet-{dns,network,performance}/` | 配置文件 `GPL-2.0-only` / 自研包默认 `GPL-3.0-only`（显式标注优先） |
-| **Cyrenet LuCI** | 统一视觉语言、Dashboard、菜单信息架构 | `themes/luci-theme-cyrenet/` | `Apache-2.0` |
-| **Cyrenet Management** | 实时监控、网络诊断、脱敏报告、配置备份与 OTA | `packages/luci-app-cyrenet-{diagnostics,backup,updater}/` | 默认 `GPL-3.0-only`（显式标注优先） |
+| **Cyrenet LuCI & UI** | Argon Shell 主题、共享设计 Token 与 React/shadcn Feature Islands（静态构建） | `themes/luci-theme-cyrenet/`、`design/`、`ui/` | 主题与 `design/` 为 `Apache-2.0` / `ui/` 默认 `GPL-3.0-only`（显式标注优先） |
+| **Cyrenet Management** | Dashboard、实时监控、网络诊断、脱敏报告、配置备份与 OTA | `packages/luci-app-cyrenet-{dashboard,diagnostics,backup,updater}/` | 默认 `GPL-3.0-only`（显式标注优先） |
 | **Cyrenet Build & Release** | 配置合并、BOM 审计、CI/CD 测试构建与 Serverless OTA | `scripts/`、`.github/workflows/`、`manifests/`、`release/`、`tests/` | 构建/测试 `GPL-2.0-only` / 元数据 `Apache-2.0` |
 
 ---
@@ -117,6 +117,7 @@ CYRENET_EXPERIMENTAL="false"
 
 自研功能统一拆分到 `packages/` 下独立 APK 软件包（默认 `GPL-3.0-only`，特定包或源码文件存在显式 SPDX 标注时以显式标注优先）：
 
+- `luci-app-cyrenet-dashboard`（实时状态与网络摘要首页）
 - `luci-app-cyrenet-dns`（DNS 与广告过滤中心）
 - `luci-app-cyrenet-updater`（OTA 与固件更新客户端）
 - `luci-app-cyrenet-backup`（配置备份与迁移中心）
@@ -129,7 +130,7 @@ CYRENET_EXPERIMENTAL="false"
 ```text
 packages/luci-app-cyrenet-<name>/
 ├── Makefile
-├── htdocs/luci-static/resources/   # LuCI 客户端 JS 视图（如有）
+├── htdocs/luci-static/resources/   # LuCI View 与来自 ui/ 编译产出的本地静态 JS/CSS 资产
 ├── root/
 │   ├── etc/uci-defaults/           # 幂等初始化脚本
 │   ├── usr/libexec/rpcd/           # ubus / rpcd 后端执行脚本或二进制
@@ -139,11 +140,13 @@ packages/luci-app-cyrenet-<name>/
 └── tests/                          # 单元/静态检查（亦可统一关联 tests/）
 ```
 
-### 5.2 Cyrenet LuCI 主题与菜单契约
+### 5.2 双层 UI 架构与 Cyrenet LuCI 契约（详见 [UIDESIGN.md](UIDESIGN.md) 与 [ADR-0002](docs/adr/0002-dual-layer-ui-architecture.md)）
 
-- `themes/luci-theme-cyrenet/` 基于 Argon 3.x Fork（保留 `Apache-2.0` 与上游版权信息）。
+- **层 A（Argon Shell）**：`themes/luci-theme-cyrenet/` 基于 Argon 3.x Fork（保留 `Apache-2.0` 与上游版权信息），承担登录、导航、全站明暗主题单一真源及原生/第三方 LuCI 页面兼容。
+- **层 B（React Feature Islands）**：`ui/` 采用 React + TypeScript + shadcn/ui + Tailwind CSS v4 + Vite 仅在构建期打包，产出纯静态 JS/CSS 资产随对应 `luci-app-cyrenet-*` 包挂载到 LuCI 内容区，**路由器不运行 Node.js，不依赖外部 CDN**；须先通过 **D1 集成 POC（`V-13`）** 门禁方可进入全面页面开发。
+- **层 C（共享 Token）**：`design/tokens/` 以 `--cn-*` 变量为两层视觉唯一真源，严禁全局 CSS 覆盖破坏原生 LuCI 表单。
 - **一级菜单信息架构**：统一整合为 `Overview`、`Network`、`Services`、`Performance`、`Diagnostics`、`System` 六个主入口，依据当前 Profile 与已安装软件包通过 `menu.d` `depends` 条件动态显示，不展示空白或不可用菜单。
-- **离线可用与回退**：全部字体、图标与静态资源必须本地打包，禁止依赖公网 CDN；始终保留切换回原生 LuCI 主题（如 `luci-theme-bootstrap`）及通过 SSH/CLI 管理的应急通道。
+- **离线可用与回退**：全部字体、图标与静态资源必须本地打包；始终保留切换回原生 LuCI 主题（如 `luci-theme-bootstrap`）及通过 SSH/CLI 管理的应急通道。
 
 ---
 
@@ -176,20 +179,21 @@ packages/luci-app-cyrenet-<name>/
 
 ## 7. 许可证边界与待验证事项登记表（对应 PROJECT.md §21.2）
 
-- **许可证策略决议**：详见 [ADR-0001](docs/adr/0001-licensing-and-spdx-strategy.md)。
+- **许可证与 UI 架构决议**：详见 [ADR-0001](docs/adr/0001-licensing-and-spdx-strategy.md) 与 [ADR-0002](docs/adr/0002-dual-layer-ui-architecture.md)（Accepted，待 D1 POC 验证）。
 - **工程待验证事项登记表**（严禁以推测代替实测，每项完成后应沉淀对应 ADR）：
 
-| 编号 | 待验证技术事项（PROJECT.md §21.2） | 目标里程碑 | 计划 ADR | 当前状态 |
+| 编号 | 待验证技术事项（PROJECT.md §21.2 / UIDESIGN.md §16） | 目标里程碑 | 计划 / 关联 ADR | 当前状态 |
 |---|---|---|---|---|
-| V-01 | 最终采用的 x86_64 镜像布局 | M1 | `ADR-0002` | 待验证 |
-| V-02 | SquashFS + Overlay 与 Ext4 的升级行为差异 | M1 / M5 | `ADR-0002` | 待验证 |
-| V-03 | AdGuard Home 与 dnsmasq 的稳定端口与切换方案 | M2 | `ADR-0003` | 待验证 |
-| V-04 | SmartDNS 与 OpenClash 的 DNS 兼容性 | M3 | `ADR-0004` | 待验证 |
-| V-05 | OpenClash 与 APK、内核及 firewall4 的依赖组合 | M3 | `ADR-0004` | 待验证 |
-| V-06 | Core / Standard / Extended 三个 Profile 镜像大小 | M1–M3 | `ADR-0005` | 待验证 |
-| V-07 | 软件包及内核 ABI 的版本锁定与混用防护方案 | M0 / M1 | `ADR-0006` | 待验证 |
+| V-01 | 最终采用的 x86_64 镜像布局 | M1 | `ADR-0003` | 待验证 |
+| V-02 | SquashFS + Overlay 与 Ext4 的升级行为差异 | M1 / M5 | `ADR-0003` | 待验证 |
+| V-03 | AdGuard Home 与 dnsmasq 的稳定端口与切换方案 | M2 | `ADR-0004` | 待验证 |
+| V-04 | SmartDNS 与 OpenClash 的 DNS 兼容性 | M3 | `ADR-0005` | 待验证 |
+| V-05 | OpenClash 与 APK、内核及 firewall4 的依赖组合 | M3 | `ADR-0005` | 待验证 |
+| V-06 | Core / Standard / Extended 三个 Profile 镜像大小 | M1–M3 | `ADR-0006` | 待验证 |
+| V-07 | 软件包及内核 ABI 的版本锁定与混用防护方案 | M0 / M1 | `ADR-0007` | 待验证 |
 | V-08 | 各类 x86 网卡与 PVE/KVM 虚拟化环境性能表现 | M1 / M6 | 测试报告 | 待验证 |
-| V-09 | OTA 升级流程与系统分区的兼容性（含公钥轮换） | M5 | `ADR-0007` | 待验证 |
-| V-10 | 配置备份恢复的跨版本 Schema 支持范围 | M4 | `ADR-0008` | 待验证 |
-| V-11 | Argon 3.x Fork 的长期维护与上游同步成本 | M2 | `ADR-0009` | 待验证 |
-| V-12 | 部分高级功能（Flow Offloading/BBR/多拨）的默认运行策略 | M3 / M6 | `ADR-0010` | 待验证 |
+| V-09 | OTA 升级流程与系统分区的兼容性（含公钥轮换） | M5 | `ADR-0008` | 待验证 |
+| V-10 | 配置备份恢复的跨版本 Schema 支持范围 | M4 | `ADR-0009` | 待验证 |
+| V-11 | Argon 3.x Fork 的长期维护与上游同步成本 | M2 | `ADR-0010` | 待验证 |
+| V-12 | 部分高级功能（Flow Offloading/BBR/多拨）的默认运行策略 | M3 / M6 | `ADR-0011` | 待验证 |
+| V-13 | D1 UI 集成 POC（Vite hash 资产加载/CSP、Tailwind v4 作用域/Preflight 隔离、Argon 主题桥与 Portal 兼容） | M2 / D1 | [ADR-0002](docs/adr/0002-dual-layer-ui-architecture.md) | 待验证 |

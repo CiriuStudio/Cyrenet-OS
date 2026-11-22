@@ -12,10 +12,13 @@ SPDX-License-Identifier: Apache-2.0
 - Cyrenet 自研应用包（含 `luci-app-cyrenet-*` 及 `packages/` 下其他自研包）以 **`GPL-3.0-only`** 为主：**当包或源码文件内有特定显式 `SPDX-License-Identifier` 标注时优先按显式标注执行，否则均默认为 `GPL-3.0-only`**（详见 [ADR-0001](../docs/adr/0001-licensing-and-spdx-strategy.md) 与 [REUSE.toml](../REUSE.toml)）。
 - 如引入或派生源自 `GPL-2.0-only` 的上游组件或内核相关脚本，必须在对应包目录与源码头显式标注 `SPDX-License-Identifier: GPL-2.0-only`，且不得将 `GPL-3.0-only` / `Apache-2.0` 模块与 `GPL-2.0-only` 二进制静态链接。
 
-## 计划自研包清单（对应 PROJECT.md §10）
+## 计划自研包清单（对应 PROJECT.md §10 与 UIDESIGN.md §2.2）
+
+> 自研包的前端页面源码维护于 `ui/`，在构建期通过 Vite 编译为纯静态 JS/CSS 资产后打入对应软件包，路由器端不运行 Node.js 或任何构建工具链。
 
 | 包名 | 职责 | 计划里程碑 |
 |---|---|---|
+| `luci-app-cyrenet-dashboard` | 实时状态摘要、流量曲线与网络健康首页 | M2 |
 | `luci-app-cyrenet-dns` | DNS Center（AdGuard Home / Adblock Fast 互斥切换、SmartDNS 与 OpenClash 冲突检查） | M2 / M3 |
 | `luci-app-cyrenet-network` | IPv6 服务发布中心、STUN/NATMap 状态整合 | M3 |
 | `luci-app-cyrenet-performance` | 性能模式编排、SQM/CAKE 入口、加速冲突检测 | M3 / M6 |

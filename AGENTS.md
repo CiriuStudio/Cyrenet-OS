@@ -14,7 +14,7 @@ SPDX-License-Identifier: Apache-2.0
 当遇到设计决策或规范冲突时，按以下从高到低优先级裁决：
 
 1. **[PROJECT.md](PROJECT.md)** — V1.0 产品与技术设计基线（**冻结基线**：未经明确授权，禁止修改产品范围、目标平台或核心选型）。
-2. **[DESIGN.md](DESIGN.md)** — 工程技术契约与跨模块接口约定。
+2. **[DESIGN.md](DESIGN.md)** 与 **[UIDESIGN.md](UIDESIGN.md)** — 工程技术契约、跨模块接口约定，以及 UI/前端双层架构与视觉规范（涉及 UI 与前端工程时二者同等权威）。
 3. **[docs/adr/](docs/adr/)** — 经过验证并拍板的架构决策记录（ADR）。
 4. **本文件（`AGENTS.md`）** — AI Agent 工程执行规则与安全红线。
 
@@ -35,8 +35,8 @@ SPDX-License-Identifier: Apache-2.0
 仓库采用按职责拆分的 SPDX / REUSE 许可证体系（详见 [LICENSES/README.md](LICENSES/README.md) 与 [REUSE.toml](REUSE.toml)）：
 
 - **`GPL-2.0-only`**：`config/`、`profiles/`、`files/`、`patches/`、`scripts/`、`tests/`、`.github/workflows/` 及核心构建相关文件。
-- **`GPL-3.0-only`**：`packages/`（含 `luci-app-cyrenet-*` 等自研应用包，有特定显式 `SPDX-License-Identifier` 标注时优先按显式标注执行，否则均默认为 `GPL-3.0-only`）。
-- **`Apache-2.0`**：`themes/`、`docs/`、`*.md`、`manifests/`、`release/`。
+- **`GPL-3.0-only`**：`packages/`（含 `luci-app-cyrenet-*` 等自研应用包）与 `ui/`（原创功能前端源码），有特定显式 `SPDX-License-Identifier` 标注时优先按显式标注执行，否则均默认为 `GPL-3.0-only`。
+- **`Apache-2.0`**：`themes/`、`design/`、`docs/`、`*.md`、`manifests/`、`release/`。
 - **`CC0-1.0`**：`.gitignore`、`.gitattributes`、`.editorconfig`、`REUSE.toml`、`**/.gitkeep`。
 - **所有新建源码、脚本、配置、文档必须在头部包含 `SPDX-FileCopyrightText` 与 `SPDX-License-Identifier` 声明**。
 - **严禁混编边界**：禁止将 `GPL-3.0-only` 或 `Apache-2.0` 代码与 `GPL-2.0-only` 二进制静态链接；派生自 `GPL-2.0-only` 上游的文件必须显式标注 `GPL-2.0-only`。
