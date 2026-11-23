@@ -9,6 +9,7 @@ import hashlib
 import json
 import pathlib
 import shutil
+import stat
 import subprocess
 import tempfile
 import unittest
@@ -54,6 +55,28 @@ class TestM0Tooling(unittest.TestCase):
             self.assertIn("CONFIG_PACKAGE_tailscale=y", ext_txt)
             self.assertIn("CONFIG_PACKAGE_mwan3=y", ext_txt)
             self.assertIn("CONFIG_PACKAGE_prometheus-node-exporter-lua=y", ext_txt)
+
+            # ADR-0007 unified kernel module ABI baseline & profile overrides
+            core_lines = set(core_txt.splitlines())
+            std_lines = set(std_txt.splitlines())
+            ext_lines = set(ext_txt.splitlines())
+
+            self.assertIn('CONFIG_VERSION_DIST="Cyrenet OS"', core_lines)
+            self.assertIn("CONFIG_PACKAGE_kmod-tun=m", core_lines)
+            self.assertIn("CONFIG_PACKAGE_kmod-sched-cake=m", core_lines)
+            self.assertNotIn("CONFIG_PACKAGE_kmod-sched-cake=y", core_lines)
+            self.assertIn("CONFIG_PACKAGE_kmod-macvlan=m", core_lines)
+            self.assertNotIn("CONFIG_PACKAGE_kmod-macvlan=y", core_lines)
+
+            self.assertIn("CONFIG_PACKAGE_kmod-sched-cake=y", std_lines)
+            self.assertNotIn("CONFIG_PACKAGE_kmod-sched-cake=m", std_lines)
+            self.assertIn("CONFIG_PACKAGE_kmod-macvlan=m", std_lines)
+            self.assertNotIn("CONFIG_PACKAGE_kmod-macvlan=y", std_lines)
+
+            self.assertIn("CONFIG_PACKAGE_kmod-sched-cake=y", ext_lines)
+            self.assertNotIn("CONFIG_PACKAGE_kmod-sched-cake=m", ext_lines)
+            self.assertIn("CONFIG_PACKAGE_kmod-macvlan=y", ext_lines)
+            self.assertNotIn("CONFIG_PACKAGE_kmod-macvlan=m", ext_lines)
 
             # Missing experimental fragment must fail cleanly
             missing_exp = subprocess.run(
@@ -305,6 +328,36 @@ class TestM0Tooling(unittest.TestCase):
                 check=False,
             )
             self.assertNotEqual(bad.returncode, 0)
+
+    def test_prepare_overlay_preserves_uci_defaults_mode_and_syntax(self) -> None:
+        script = SCRIPTS_DIR / "build" / "prepare-overlay.sh"
+        with tempfile.TemporaryDirectory() as td:
+            out = pathlib.Path(td) / "overlay"
+            res = subprocess.run(
+                [
+                    "bash",
+                    str(script),
+                    "--profile",
+                    "core",
+                    "--output",
+                    str(out),
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(res.returncode, 0, msg=res.stderr)
+            uci_script = out / "etc" / "uci-defaults" / "99-cyrenet-defaults"
+            self.assertTrue(uci_script.is_file())
+            self.assertTrue(bool(uci_script.stat().st_mode & stat.S_IXUSR))
+
+            syntax = subprocess.run(
+                ["sh", "-n", str(uci_script)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(syntax.returncode, 0, msg=syntax.stderr)
 
     def test_ota_manifest_schema_validation(self) -> None:
         schema_path = REPO_ROOT / "manifests" / "schemas" / "ota-manifest.schema.json"

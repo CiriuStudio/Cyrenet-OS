@@ -218,11 +218,26 @@ def check_lf_and_secrets(repo_root: pathlib.Path, files: list[pathlib.Path], err
 
 def check_shell_syntax(repo_root: pathlib.Path, files: list[pathlib.Path], errors: list[str]) -> None:
     for path in files:
-        rel = path.relative_to(repo_root).as_posix()
+        rel_path = path.relative_to(repo_root)
+        rel = rel_path.as_posix()
+        parts = rel_path.parts
         if rel.startswith("scripts/") and path.suffix == ".sh":
             res = subprocess.run(["bash", "-n", str(path)], capture_output=True, text=True)
             if res.returncode != 0:
                 errors.append(f"bash -n failed for {rel}: {res.stderr.strip()}")
+        elif (
+            (len(parts) >= 4 and parts[:3] == ("files", "etc", "uci-defaults"))
+            or (
+                len(parts) >= 6
+                and parts[0] == "profiles"
+                and parts[2:5] == ("files", "etc", "uci-defaults")
+            )
+        ):
+            if path.name.startswith(".") or path.suffix == ".md":
+                continue
+            res = subprocess.run(["sh", "-n", str(path)], capture_output=True, text=True)
+            if res.returncode != 0:
+                errors.append(f"sh -n failed for {rel}: {res.stderr.strip()}")
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -184,13 +184,13 @@ packages/luci-app-cyrenet-<name>/
 
 | 编号 | 待验证技术事项（PROJECT.md §21.2 / UIDESIGN.md §16） | 目标里程碑 | 计划 / 关联 ADR | 当前状态 |
 |---|---|---|---|---|
-| V-01 | 最终采用的 x86_64 镜像布局 | M1 | `ADR-0003` | 待验证 |
+| V-01 | 最终采用的 x86_64 镜像布局 | M1 | `ADR-0003` / [M1 报告](docs/test-reports/m1-alpha-report.md) | 部分验证（Core SquashFS EFI VMware 启动通过；Ext4/升级定稿待 `ADR-0003`） |
 | V-02 | SquashFS + Overlay 与 Ext4 的升级行为差异 | M1 / M5 | `ADR-0003` | 待验证 |
 | V-03 | AdGuard Home 与 dnsmasq 的稳定端口与切换方案 | M2 | `ADR-0004` | 待验证 |
 | V-04 | SmartDNS 与 OpenClash 的 DNS 兼容性 | M3 | `ADR-0005` | 待验证 |
 | V-05 | OpenClash 与 APK、内核及 firewall4 的依赖组合 | M3 | `ADR-0005` | 待验证 |
-| V-06 | Core / Standard / Extended 三个 Profile 镜像大小 | M1–M3 | `ADR-0006` | 待验证 |
-| V-07 | 软件包及内核 ABI 的版本锁定与混用防护方案 | M0 / M1 | `ADR-0007` | 待验证 |
+| V-06 | Core / Standard / Extended 三个 Profile 镜像大小 | M1–M3 | [ADR-0006](docs/adr/0006-profile-image-size-baseline.md) | M1 基线已建立（M2–M3 持续跟踪） |
+| V-07 | 软件包及内核 ABI 的版本锁定与混用防护方案 | M0 / M1 | [ADR-0007](docs/adr/0007-kernel-abi-and-vermagic-unification.md) | 方案已落地（`common.config` 已统一 `=m`，下一轮构建 `vermagic` 待实测） |
 | V-08 | 各类 x86 网卡与 PVE/KVM 虚拟化环境性能表现 | M1 / M6 | 测试报告 | 待验证 |
 | V-09 | OTA 升级流程与系统分区的兼容性（含公钥轮换） | M5 | `ADR-0008` | 待验证 |
 | V-10 | 配置备份恢复的跨版本 Schema 支持范围 | M4 | `ADR-0009` | 待验证 |

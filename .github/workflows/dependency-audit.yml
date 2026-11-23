@@ -35,8 +35,8 @@ jobs:
       - name: Run strict repository audit
         run: python3 scripts/lint/check-repo.py --strict
 
-      - name: Run ShellCheck on build scripts
-        run: shellcheck scripts/build/*.sh
+      - name: Run ShellCheck on build and first-boot scripts
+        run: shellcheck scripts/build/*.sh files/etc/uci-defaults/*
 
       - name: Run M0 unit tests
         run: python3 -m unittest discover -s tests/unit -v
