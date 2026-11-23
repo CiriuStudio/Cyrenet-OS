@@ -37,7 +37,7 @@ const AlertTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTM
   ({ className, ...props }, ref) => (
     <h5
       ref={ref}
-      className={cn("cn:mb-1 cn:font-semibold cn:leading-none cn:tracking-tight", className)}
+      className={cn("cn:m-0 cn:mb-1 cn:text-sm cn:font-semibold cn:leading-5 cn:tracking-tight", className)}
       {...props}
     />
   ),

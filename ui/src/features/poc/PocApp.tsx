@@ -339,8 +339,8 @@ export function PocApp({ bridge, container }: PocAppProps) {
       {remoteState.status === "forbidden" && (
         <Alert variant="destructive" data-testid="poc-status-forbidden">
           <div className="cn:flex cn:items-start cn:gap-3">
-            <Lock className="cn:mt-0.5 cn:h-4 cn:w-4 cn:shrink-0" aria-hidden="true" />
-            <div>
+            <Lock className="cn:h-5 cn:w-5 cn:shrink-0" aria-hidden="true" />
+            <div className="cn:min-w-0">
               <AlertTitle>{t.forbiddenTitle}</AlertTitle>
               <AlertDescription>{remoteState.reason}</AlertDescription>
             </div>
@@ -351,8 +351,8 @@ export function PocApp({ bridge, container }: PocAppProps) {
       {remoteState.status === "unsupported" && (
         <Alert variant="warning" data-testid="poc-status-unsupported">
           <div className="cn:flex cn:items-start cn:gap-3">
-            <AlertTriangle className="cn:mt-0.5 cn:h-4 cn:w-4 cn:shrink-0" aria-hidden="true" />
-            <div>
+            <AlertTriangle className="cn:h-5 cn:w-5 cn:shrink-0" aria-hidden="true" />
+            <div className="cn:min-w-0">
               <AlertTitle>{t.unsupportedTitle}</AlertTitle>
               <AlertDescription>{remoteState.reason}</AlertDescription>
             </div>
@@ -363,8 +363,8 @@ export function PocApp({ bridge, container }: PocAppProps) {
       {remoteState.status === "error" && (
         <Alert variant="destructive" data-testid="poc-status-error">
           <div className="cn:flex cn:items-start cn:gap-3">
-            <ShieldAlert className="cn:mt-0.5 cn:h-4 cn:w-4 cn:shrink-0" aria-hidden="true" />
-            <div>
+            <ShieldAlert className="cn:h-5 cn:w-5 cn:shrink-0" aria-hidden="true" />
+            <div className="cn:min-w-0">
               <AlertTitle>
                 {t.errorTitle} ({remoteState.code})
               </AlertTitle>
