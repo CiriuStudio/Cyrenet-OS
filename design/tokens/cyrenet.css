@@ -1,0 +1,96 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Cyrenet OS Shared Design Tokens (UIDESIGN.md §3 / Layer C).
+ * Single source of truth for both Layer A (Argon LuCI Shell) and Layer B (React/shadcn Islands).
+ */
+
+:root,
+.cyrenet-ui-root {
+  --cn-font-sans: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  --cn-font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, ui-monospace, monospace;
+  --cn-radius-sm: 6px;
+  --cn-radius-md: 8px;
+  --cn-radius-lg: 12px;
+  --cn-radius-xl: 16px;
+  --cn-chart-download: var(--cn-brand-ice);
+  --cn-chart-upload: var(--cn-primary);
+}
+
+:root,
+:root[data-cyrenet-theme="light"],
+.cyrenet-ui-root[data-cyrenet-theme="light"] {
+  --cn-canvas: #FAF9FE;
+  --cn-surface: #FFFFFF;
+  --cn-surface-soft: #F4F0FB;
+  --cn-surface-raised: #FBFAFF;
+  --cn-sidebar: #F7F4FC;
+  --cn-border: #E6E1F0;
+  --cn-foreground: #272238;
+  --cn-body: #3A354B;
+  --cn-muted-foreground: #615B73;
+  --cn-primary: #7653B4;
+  --cn-primary-hover: #68469F;
+  --cn-primary-foreground: #FFFFFF;
+  --cn-brand-pink: #D69BCA;
+  --cn-brand-purple-soft: #E9DDF7;
+  --cn-brand-ice: #A6C8EB;
+  --cn-info: #326DA9;
+  --cn-success: #277B5D;
+  --cn-warning: #95621A;
+  --cn-danger: #B73951;
+  --cn-focus-ring: #7653B4;
+}
+
+:root[data-cyrenet-theme="dark"],
+:root[data-darkmode="true"],
+:root.dark,
+.cyrenet-ui-root[data-cyrenet-theme="dark"],
+.cyrenet-ui-root.dark {
+  --cn-canvas: #13121D;
+  --cn-surface: #1C1A29;
+  --cn-surface-soft: #272438;
+  --cn-surface-raised: #302C41;
+  --cn-sidebar: #191725;
+  --cn-border: #39344A;
+  --cn-foreground: #F6F3FC;
+  --cn-body: #E2DBEE;
+  --cn-muted-foreground: #BAB2CC;
+  --cn-primary: #CDB1F6;
+  --cn-primary-hover: #DFC9FD;
+  --cn-primary-foreground: #1F1631;
+  --cn-brand-pink: #F0B2DC;
+  --cn-brand-purple-soft: #3A3150;
+  --cn-brand-ice: #A2C8EF;
+  --cn-info: #9AC8F1;
+  --cn-success: #78D6A3;
+  --cn-warning: #E8BE7F;
+  --cn-danger: #FC9AAB;
+  --cn-focus-ring: #D9C2FA;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-cyrenet-theme="light"]):not([data-darkmode="false"]) {
+    --cn-canvas: #13121D;
+    --cn-surface: #1C1A29;
+    --cn-surface-soft: #272438;
+    --cn-surface-raised: #302C41;
+    --cn-sidebar: #191725;
+    --cn-border: #39344A;
+    --cn-foreground: #F6F3FC;
+    --cn-body: #E2DBEE;
+    --cn-muted-foreground: #BAB2CC;
+    --cn-primary: #CDB1F6;
+    --cn-primary-hover: #DFC9FD;
+    --cn-primary-foreground: #1F1631;
+    --cn-brand-pink: #F0B2DC;
+    --cn-brand-purple-soft: #3A3150;
+    --cn-brand-ice: #A2C8EF;
+    --cn-info: #9AC8F1;
+    --cn-success: #78D6A3;
+    --cn-warning: #E8BE7F;
+    --cn-danger: #FC9AAB;
+    --cn-focus-ring: #D9C2FA;
+  }
+}

@@ -1,0 +1,96 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+# SPDX-License-Identifier: GPL-3.0-only
+#
+# Read-only rpcd backend for Cyrenet OS D1 UI Integration POC.
+# Collects real release metadata, kernel version, uptime, and load average;
+# reports missing values as "unknown" or null without fabricating metrics.
+
+json_escape() {
+	printf '%s' "$1" | tr '\r\n\t' '   ' | sed 's/\\/\\\\/g; s/"/\\"/g'
+}
+
+read_kv_from_file() {
+	file_path="$1"
+	key_name="$2"
+	if [ -r "$file_path" ]; then
+		val="$(sed -n "s/^${key_name}=[\"']\?\([^\"']*\)[\"']\?$/\1/p" "$file_path" | head -n 1)"
+		if [ -n "$val" ]; then
+			printf '%s' "$val"
+			return 0
+		fi
+	fi
+	printf 'unknown'
+}
+
+case "${1:-}" in
+	list)
+		printf '{"status":{}}\n'
+		;;
+	call)
+		case "${2:-}" in
+			status)
+				hostname_val="unknown"
+				if [ -r /proc/sys/kernel/hostname ]; then
+					h_raw="$(tr -d '\r\n' < /proc/sys/kernel/hostname 2>/dev/null || true)"
+					[ -n "$h_raw" ] && hostname_val="$h_raw"
+				elif command -v hostname >/dev/null 2>&1; then
+					h_raw="$(hostname 2>/dev/null || true)"
+					[ -n "$h_raw" ] && hostname_val="$h_raw"
+				fi
+
+				cyrenet_version="$(read_kv_from_file /etc/cyrenet-release CYRENET_VERSION)"
+				cyrenet_profile="$(read_kv_from_file /etc/cyrenet-release CYRENET_PROFILE)"
+				cyrenet_channel="$(read_kv_from_file /etc/cyrenet-release CYRENET_CHANNEL)"
+				upstream_version="$(read_kv_from_file /etc/cyrenet-release CYRENET_UPSTREAM_VERSION)"
+				if [ "$upstream_version" = "unknown" ]; then
+					upstream_version="$(read_kv_from_file /etc/openwrt_release DISTRIB_RELEASE)"
+				fi
+
+				kernel_version="$(uname -r 2>/dev/null || printf 'unknown')"
+
+				uptime_json="null"
+				if [ -r /proc/uptime ]; then
+					uptime_line="$(cat /proc/uptime 2>/dev/null || true)"
+					uptime_first="${uptime_line%% *}"
+					uptime_sec="${uptime_first%%.*}"
+					case "$uptime_sec" in
+						""|*[!0-9]*)
+							uptime_json="null"
+							;;
+						*)
+							uptime_json="$uptime_sec"
+							;;
+					esac
+				fi
+
+				load_avg="unknown"
+				if [ -r /proc/loadavg ]; then
+					load_raw="$(awk '{print $1, $2, $3}' /proc/loadavg 2>/dev/null || true)"
+					[ -n "$load_raw" ] && load_avg="$load_raw"
+				fi
+
+				observed_at="$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || printf 'unknown')"
+
+				printf '{"hostname":"%s","cyrenet_version":"%s","cyrenet_profile":"%s","cyrenet_channel":"%s","upstream_version":"%s","kernel_version":"%s","uptime_seconds":%s,"load_average":"%s","observed_at":"%s"}\n' \
+					"$(json_escape "$hostname_val")" \
+					"$(json_escape "$cyrenet_version")" \
+					"$(json_escape "$cyrenet_profile")" \
+					"$(json_escape "$cyrenet_channel")" \
+					"$(json_escape "$upstream_version")" \
+					"$(json_escape "$kernel_version")" \
+					"$uptime_json" \
+					"$(json_escape "$load_avg")" \
+					"$(json_escape "$observed_at")"
+				;;
+			*)
+				printf '{"error":"Unknown method"}\n'
+				exit 1
+				;;
+		esac
+		;;
+	*)
+		printf '{"error":"Usage: %s {list|call <method>}"}\n' "$0"
+		exit 1
+		;;
+esac

@@ -400,6 +400,67 @@ class TestM0Tooling(unittest.TestCase):
         with self.assertRaises(jsonschema.ValidationError):
             jsonschema.validate(instance=missing_sig, schema=schema)
 
+    def test_dashboard_poc_package_contracts(self) -> None:
+        pkg_dir = REPO_ROOT / "packages" / "luci-app-cyrenet-dashboard"
+        makefile = pkg_dir / "Makefile"
+        rpcd_script = pkg_dir / "root" / "usr" / "libexec" / "rpcd" / "luci.cyrenet.poc"
+        menu_json = pkg_dir / "root" / "usr" / "share" / "luci" / "menu.d" / "luci-app-cyrenet-dashboard.json"
+        acl_json = pkg_dir / "root" / "usr" / "share" / "rpcd" / "acl.d" / "luci-app-cyrenet-dashboard.json"
+
+        makefile_lines = makefile.read_text(encoding="utf-8").splitlines()
+        in_recipe = False
+        for line in makefile_lines:
+            if line.startswith("define "):
+                in_recipe = True
+                continue
+            if line == "endef":
+                in_recipe = False
+                continue
+            if in_recipe and line.strip():
+                self.assertTrue(
+                    line.startswith("\t"),
+                    msg=f"Makefile recipe line must be Tab-indented: {line!r}",
+                )
+
+        menu_data = json.loads(menu_json.read_text(encoding="utf-8"))
+        self.assertIn("admin/status/cyrenet-poc", menu_data)
+        self.assertEqual(menu_data["admin/status/cyrenet-poc"]["action"]["path"], "cyrenet/poc")
+
+        acl_data = json.loads(acl_json.read_text(encoding="utf-8"))
+        poc_acl = acl_data["luci-app-cyrenet-dashboard"]
+        self.assertIn("luci.cyrenet.poc", poc_acl["read"]["ubus"])
+        self.assertNotIn("write", poc_acl)
+
+        self.assertTrue(bool(rpcd_script.stat().st_mode & stat.S_IXUSR))
+        sh_res = subprocess.run(["sh", "-n", str(rpcd_script)], capture_output=True, text=True, check=False)
+        self.assertEqual(sh_res.returncode, 0, msg=sh_res.stderr)
+
+        list_res = subprocess.run([str(rpcd_script), "list"], capture_output=True, text=True, check=False)
+        self.assertEqual(list_res.returncode, 0, msg=list_res.stderr)
+        self.assertIn("status", json.loads(list_res.stdout))
+
+        call_res = subprocess.run(
+            [str(rpcd_script), "call", "status"],
+            input="{}",
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(call_res.returncode, 0, msg=call_res.stderr)
+        status_payload = json.loads(call_res.stdout)
+        for key in (
+            "hostname",
+            "cyrenet_version",
+            "cyrenet_profile",
+            "cyrenet_channel",
+            "upstream_version",
+            "kernel_version",
+            "uptime_seconds",
+            "load_average",
+            "observed_at",
+        ):
+            self.assertIn(key, status_payload)
+
     def test_check_repo_strict_passes(self) -> None:
         script = SCRIPTS_DIR / "lint" / "check-repo.py"
         res = subprocess.run(

@@ -179,7 +179,7 @@ packages/luci-app-cyrenet-<name>/
 
 ## 7. 许可证边界与待验证事项登记表（对应 PROJECT.md §21.2）
 
-- **许可证与 UI 架构决议**：详见 [ADR-0001](docs/adr/0001-licensing-and-spdx-strategy.md) 与 [ADR-0002](docs/adr/0002-dual-layer-ui-architecture.md)（Accepted，待 D1 POC 验证）。
+- **许可证与 UI 架构决议**：详见 [ADR-0001](docs/adr/0001-licensing-and-spdx-strategy.md) 与 [ADR-0002](docs/adr/0002-dual-layer-ui-architecture.md)（Accepted，D1 本地集成 POC 已通过，待 M2 固件实机验证）。
 - **工程待验证事项登记表**（严禁以推测代替实测，每项完成后应沉淀对应 ADR）：
 
 | 编号 | 待验证技术事项（PROJECT.md §21.2 / UIDESIGN.md §16） | 目标里程碑 | 计划 / 关联 ADR | 当前状态 |
@@ -196,4 +196,4 @@ packages/luci-app-cyrenet-<name>/
 | V-10 | 配置备份恢复的跨版本 Schema 支持范围 | M4 | `ADR-0009` | 待验证 |
 | V-11 | Argon 3.x Fork 的长期维护与上游同步成本 | M2 | `ADR-0010` | 待验证 |
 | V-12 | 部分高级功能（Flow Offloading/BBR/多拨）的默认运行策略 | M3 / M6 | `ADR-0011` | 待验证 |
-| V-13 | D1 UI 集成 POC（Vite hash 资产加载/CSP、Tailwind v4 作用域/Preflight 隔离、Argon 主题桥与 Portal 兼容） | M2 / D1 | [ADR-0002](docs/adr/0002-dual-layer-ui-architecture.md) | 待验证 |
+| V-13 | D1 UI 集成 POC（Vite hash 资产加载/CSP、Tailwind v4 作用域/Preflight 隔离、Argon 主题桥与 Portal 兼容） | M2 / D1 | [ADR-0002](docs/adr/0002-dual-layer-ui-architecture.md) | 本地 POC 已通过（Vite hash 资产/Tailwind v4 cn: 隔离/Portal 作用域/ThemeBridge 单元验证通过；待 M2 固件 LuCI/Argon 实机验证） |

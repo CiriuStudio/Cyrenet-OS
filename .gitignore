@@ -41,6 +41,8 @@ release/keys/*.sec
 __pycache__/
 .pytest_cache/
 node_modules/
+/ui/dist/
+/packages/*/htdocs/luci-static/resources/cyrenet/
 .DS_Store
 Thumbs.db
 .vscode/

@@ -63,6 +63,14 @@ def iter_repo_files(repo_root: pathlib.Path) -> list[pathlib.Path]:
         rel_parts = path.relative_to(repo_root).parts
         if any(part in ignored_dirs for part in rel_parts) or rel_parts[0] in ignored_root_dirs:
             continue
+        if rel_parts[:2] == ("ui", "dist"):
+            continue
+        if (
+            len(rel_parts) >= 6
+            and rel_parts[0] == "packages"
+            and rel_parts[2:6] == ("htdocs", "luci-static", "resources", "cyrenet")
+        ):
+            continue
         if rel_parts[:2] == ("scripts", "temp") or path.name.endswith((".tmp.sh", ".local.sh")):
             continue
         if path.suffix in {".pyc", ".pyo"}:
@@ -231,6 +239,16 @@ def check_shell_syntax(repo_root: pathlib.Path, files: list[pathlib.Path], error
                 len(parts) >= 6
                 and parts[0] == "profiles"
                 and parts[2:5] == ("files", "etc", "uci-defaults")
+            )
+            or (
+                len(parts) >= 7
+                and parts[0] == "packages"
+                and parts[2:6] == ("root", "usr", "libexec", "rpcd")
+            )
+            or (
+                len(parts) >= 6
+                and parts[0] == "packages"
+                and parts[2:5] == ("root", "etc", "uci-defaults")
             )
         ):
             if path.name.startswith(".") or path.suffix == ".md":

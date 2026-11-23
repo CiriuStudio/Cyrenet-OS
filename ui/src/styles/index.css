@@ -1,0 +1,73 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+ * SPDX-License-Identifier: GPL-3.0-only
+ *
+ * Scoped Tailwind CSS v4 + Cyrenet Design Token Bridge.
+ */
+
+@import "../../../design/tokens/cyrenet.css";
+@import "tailwindcss/theme.css" layer(theme) prefix(cn);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(cn);
+@import "./scoped-preflight.css";
+
+@custom-variant dark (&:where(.dark, .dark *, [data-cyrenet-theme="dark"], [data-cyrenet-theme="dark"] *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --radius-sm: var(--cn-radius-sm);
+  --radius-md: var(--cn-radius-md);
+  --radius-lg: var(--cn-radius-lg);
+  --radius-xl: var(--cn-radius-xl);
+}
+
+.cyrenet-ui-root {
+  --background: var(--cn-canvas);
+  --foreground: var(--cn-foreground);
+  --card: var(--cn-surface);
+  --card-foreground: var(--cn-foreground);
+  --popover: var(--cn-surface);
+  --popover-foreground: var(--cn-foreground);
+  --primary: var(--cn-primary);
+  --primary-foreground: var(--cn-primary-foreground);
+  --secondary: var(--cn-surface-soft);
+  --secondary-foreground: var(--cn-foreground);
+  --muted: var(--cn-surface-soft);
+  --muted-foreground: var(--cn-muted-foreground);
+  --accent: var(--cn-surface-soft);
+  --accent-foreground: var(--cn-foreground);
+  --destructive: var(--cn-danger);
+  --destructive-foreground: #FFFFFF;
+  --border: var(--cn-border);
+  --input: var(--cn-border);
+  --ring: var(--cn-focus-ring);
+  --success: var(--cn-success);
+  --warning: var(--cn-warning);
+  --info: var(--cn-info);
+  --radius: 0.75rem;
+}
+
+.cyrenet-ui-root[data-cyrenet-theme="dark"],
+.cyrenet-ui-root.dark {
+  --destructive-foreground: #1F1631;
+}

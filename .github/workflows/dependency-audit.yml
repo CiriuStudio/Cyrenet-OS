@@ -35,8 +35,8 @@ jobs:
       - name: Run strict repository audit
         run: python3 scripts/lint/check-repo.py --strict
 
-      - name: Run ShellCheck on build and first-boot scripts
-        run: shellcheck scripts/build/*.sh files/etc/uci-defaults/*
+      - name: Run ShellCheck on build, first-boot, and rpcd scripts
+        run: shellcheck scripts/build/*.sh files/etc/uci-defaults/* packages/*/root/usr/libexec/rpcd/*
 
       - name: Run M0 unit tests
         run: python3 -m unittest discover -s tests/unit -v
@@ -53,3 +53,29 @@ jobs:
 
       - name: Dry-run deterministic upstream fetch
         run: bash scripts/build/fetch-upstream.sh --dry-run
+
+  ui-poc-gate:
+    name: UI TypeCheck, Isolation Tests & Static Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: ui/package-lock.json
+
+      - name: Install UI dependencies
+        working-directory: ui
+        run: npm ci
+
+      - name: Build UI static bundle and sync to LuCI package
+        run: bash scripts/build/build-ui.sh --skip-install
+
+      - name: Typecheck and run D1 UI isolation tests
+        working-directory: ui
+        run: npm run typecheck && npm test

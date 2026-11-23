@@ -1,0 +1,12 @@
+{
+  "luci-app-cyrenet-dashboard": {
+    "description": "Grant read-only access to Cyrenet OS D1 UI POC status",
+    "read": {
+      "ubus": {
+        "luci.cyrenet.poc": [
+          "status"
+        ]
+      }
+    }
+  }
+}

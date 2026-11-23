@@ -1,0 +1,52 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+ * SPDX-License-Identifier: GPL-3.0-only
+ *
+ * Scoped Preflight for Cyrenet React Feature Islands.
+ * Strictly constrained inside .cyrenet-ui-root so native LuCI and third-party plugin styles stay intact.
+ */
+
+.cyrenet-ui-root,
+.cyrenet-ui-root *,
+.cyrenet-ui-root *::before,
+.cyrenet-ui-root *::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: var(--border, var(--cn-border));
+}
+
+.cyrenet-ui-root {
+  font-family: var(--cn-font-sans);
+  color: var(--foreground);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.cyrenet-ui-root h1,
+.cyrenet-ui-root h2,
+.cyrenet-ui-root h3,
+.cyrenet-ui-root h4,
+.cyrenet-ui-root p,
+.cyrenet-ui-root ul,
+.cyrenet-ui-root ol,
+.cyrenet-ui-root dl,
+.cyrenet-ui-root dd {
+  margin: 0;
+}
+
+.cyrenet-ui-root button,
+.cyrenet-ui-root input,
+.cyrenet-ui-root select,
+.cyrenet-ui-root textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+
+.cyrenet-ui-root button {
+  background-color: transparent;
+  cursor: pointer;
+}

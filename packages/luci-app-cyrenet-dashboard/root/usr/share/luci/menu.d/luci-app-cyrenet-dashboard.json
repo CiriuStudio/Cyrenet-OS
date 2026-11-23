@@ -1,0 +1,15 @@
+{
+  "admin/status/cyrenet-poc": {
+    "title": "Cyrenet UI POC",
+    "order": 90,
+    "action": {
+      "type": "view",
+      "path": "cyrenet/poc"
+    },
+    "depends": {
+      "acl": [
+        "luci-app-cyrenet-dashboard"
+      ]
+    }
+  }
+}

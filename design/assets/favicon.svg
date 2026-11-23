@@ -1,0 +1,11 @@
+<!--
+SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+SPDX-License-Identifier: Apache-2.0
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none" role="img" aria-label="Cyrenet OS Favicon">
+  <rect x="2" y="2" width="28" height="28" rx="8" fill="#FAF9FE" stroke="#E6E1F0" stroke-width="1.5" />
+  <circle cx="16" cy="16" r="10" stroke="#A6C8EB" stroke-width="2" />
+  <ellipse cx="16" cy="16" rx="11" ry="5" transform="rotate(-28 16 16)" stroke="#7653B4" stroke-width="2.4" />
+  <circle cx="16" cy="16" r="4" fill="#7653B4" />
+  <circle cx="24" cy="9.5" r="2" fill="#D69BCA" />
+</svg>

@@ -5,7 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 
 # ADR-0002: Argon LuCI Shell + React/shadcn Feature Islands 双层 UI 架构
 
-- **状态（Status）：** Accepted (Pending D1 POC Gate)
+- **状态（Status）：** Accepted（D1 本地集成 POC 已通过；待 M2 固件 LuCI/Argon 实机验证）
 - **日期（Date）：** 2026-11-22
 - **关联章节（Related PROJECT.md Section）：** `§1.3 设计哲学`、`§9 Cyrenet LuCI 视觉系统`、`§10 自研系统组件`、`§21.2 V-11`
 
@@ -40,4 +40,11 @@ SPDX-License-Identifier: Apache-2.0
 
 ## 验证证据（Verification Evidence）
 
-- **当前状态**：架构方案已由 [UIDESIGN.md](../../UIDESIGN.md) 确立，尚未进入 D1 实测验证；实际构建产物路径、Tailwind 作用域策略及包版本锁定待 M2/D1 POC 实测后补记本 ADR。
+- **D1 POC 验证状态（2026-11-23）**：已完成最小化工程脚手架、生产态静态构建与自动化集成单元测试；真实 ImmortalWrt `25.12.2` 固件与 Argon Fork 实机浏览器验证尚未执行（`Not Run`，计划随 M2 构建开展）。
+- **锁定的前端工具链版本（`ui/package-lock.json`）**：
+  - 运行时：`react@19.3.1`、`react-dom@19.3.1`、`@radix-ui/react-dialog@1.3.1`、`@radix-ui/react-slot@1.5.0`、`lucide-react@0.475.0`、`tailwind-merge@3.7.1`、`clsx@2.1.1`、`class-variance-authority@0.7.1`
+  - 构建与测试：`typescript@5.9.3`、`vite@6.4.6`、`@vitejs/plugin-react@4.7.0`、`tailwindcss@4.3.5`、`@tailwindcss/vite@4.3.5`、`vitest@3.2.7`
+- **已验证的关键隔离方案**：
+  - **Tailwind CSS v4 作用域隔离**：省略全局 `tailwindcss/preflight.css`，在 `ui/src/styles/index.css` 显式采用 `prefix(cn)` 与 scoped `.cyrenet-ui-root` 变量别名、`ui/src/styles/scoped-preflight.css`，配合 `extendTailwindMerge({ prefix: "cn" })`；实测编译 CSS 未生成全局 `body{`、`html,`、`table{` 重置及 `:root{--background:` 泄漏。
+  - **Portal 与主题桥接**：Radix Dialog 通过 `PortalProvider` 统一挂载于 `.cyrenet-ui-root` 内部的 `.cyrenet-portal-root`；`ThemeBridge` 通过 `MutationObserver`、`matchMedia` 与 `cyrenet:theme-change` 事件同步宿主的 `data-darkmode` / `data-cyrenet-theme` / `.dark`。
+  - **静态产物与挂载路径**：`scripts/build/build-ui.sh` 以 `base: "./"`、`sourcemap: false`、`preserveEntrySignatures: "strict"` 构建并同步至 `packages/luci-app-cyrenet-dashboard/htdocs/luci-static/resources/cyrenet/`；D1 POC 实测产物体积为 `manifest.json`（`0.20 kB`，gzip `0.14 kB`）、`poc-DgMVtAE6.css`（`18.31 kB`，gzip `4.05 kB`）、`poc-B7hTkRE_.js`（`320.72 kB`，gzip `100.30 kB`），CSS 与 JS 均无外部 CDN 资产加载；LuCI 视图 `view/cyrenet/poc.js` 提供资产失败时一键回退原生 LuCI 概览页的提示。

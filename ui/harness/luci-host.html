@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<!--
+SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
+SPDX-License-Identifier: GPL-3.0-only
+-->
+<html lang="zh-cn" data-darkmode="false">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cyrenet OS — LuCI Host Simulation Harness (D1 POC)</title>
+    <style>
+      /* Simulated ImmortalWrt / Argon LuCI host shell styles kept separate from .cyrenet-ui-root */
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #f5f5f5;
+        color: #222222;
+      }
+      html[data-darkmode="true"] body {
+        background: #141418;
+        color: #eaeaea;
+      }
+      .luci-shell {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        min-height: 100vh;
+      }
+      .luci-sidebar {
+        padding: 16px;
+        border-right: 1px solid #d4d4d8;
+        background: #ececf0;
+      }
+      html[data-darkmode="true"] .luci-sidebar {
+        border-color: #32323c;
+        background: #1b1b22;
+      }
+      .luci-main {
+        padding: 20px;
+      }
+      .luci-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #d4d4d8;
+      }
+      .cbi-map {
+        margin-top: 24px;
+        padding: 12px;
+        border: 1px dashed #9ca3af;
+        border-radius: 6px;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="luci-shell">
+      <aside class="luci-sidebar">
+        <img src="../../design/assets/logo-mark.svg" alt="Cyrenet OS" width="40" height="40" />
+        <h2>ImmortalWrt LuCI Host</h2>
+        <p>Simulated Argon Shell</p>
+        <p class="hidden" id="native-hidden-sentinel">Must remain hidden</p>
+      </aside>
+      <main class="luci-main">
+        <div class="luci-toolbar">
+          <button type="button" id="toggle-theme">Toggle Host Dark Mode</button>
+          <button type="button" id="toggle-lang">Toggle Lang (zh-cn / en)</button>
+          <label>
+            Mock RPC State:
+            <select id="rpc-mode">
+              <option value="ready">ready</option>
+              <option value="forbidden">forbidden (ubus 6)</option>
+              <option value="unsupported">unsupported (ubus 4)</option>
+              <option value="error">error</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="cyrenet-app-root" class="cyrenet-ui-root" data-island="poc"></div>
+
+        <section class="cbi-map" id="native-luci-control">
+          <h3>Native LuCI CBI Table &amp; Form Isolation Probe</h3>
+          <table border="1" cellpadding="6">
+            <thead>
+              <tr><th>Interface</th><th>Protocol</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>wan</td><td>pppoe</td><td>Simulated Native Control</td></tr>
+            </tbody>
+          </table>
+          <p>
+            <input type="text" value="Native LuCI Input" aria-label="Native input" />
+            <button type="button">Native LuCI Save</button>
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <script type="module">
+      const htmlEl = document.documentElement;
+      let currentMode = "ready";
+
+      window.L = {
+        env: { sessionid: "simulated-luci-session", lang: "zh-cn" },
+        resource: (rel) => `../dist/${rel}`,
+      };
+
+      async function bootIsland() {
+        const res = await fetch("../dist/manifest.json");
+        const manifest = await res.json();
+        const entry = manifest["src/entries/poc.tsx"];
+        for (const cssRel of entry.css || []) {
+          if (!document.querySelector(`link[data-cyrenet-css="${cssRel}"]`)) {
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = `../dist/${cssRel}`;
+            link.dataset.cyrenetCss = cssRel;
+            document.head.appendChild(link);
+          }
+        }
+        const mod = await import(`../dist/${entry.file}`);
+        const rootEl = document.getElementById("cyrenet-app-root");
+        let mounted = null;
+
+        const mountNow = () => {
+          mounted?.unmount();
+          mounted = mod.mountCyrenetIsland(rootEl, {
+            lang: htmlEl.lang,
+            resourceBase: "../dist",
+            callRpc: async () => {
+              if (currentMode === "forbidden") {
+                throw { code: 6, message: "Permission denied (simulated ACL)" };
+              }
+              if (currentMode === "unsupported") {
+                throw { code: 4, message: "Object not found (simulated)" };
+              }
+              if (currentMode === "error") {
+                throw { code: "E_TIMEOUT", message: "Simulated RPC timeout" };
+              }
+              return {
+                hostname: "CyrenetOS-Harness",
+                cyrenet_version: "1.0.0-d1poc",
+                cyrenet_profile: "core",
+                cyrenet_channel: "nightly",
+                upstream_version: "25.12.2",
+                kernel_version: "6.12.103",
+                uptime_seconds: 7342,
+                load_average: "0.08 0.04 0.01",
+                observed_at: new Date().toISOString(),
+              };
+            },
+          });
+        };
+
+        document.getElementById("toggle-theme").addEventListener("click", () => {
+          const nextDark = htmlEl.getAttribute("data-darkmode") !== "true";
+          htmlEl.setAttribute("data-darkmode", String(nextDark));
+        });
+        document.getElementById("toggle-lang").addEventListener("click", () => {
+          htmlEl.lang = htmlEl.lang === "zh-cn" ? "en" : "zh-cn";
+          mountNow();
+        });
+        document.getElementById("rpc-mode").addEventListener("change", (ev) => {
+          currentMode = ev.target.value;
+          mountNow();
+        });
+
+        mountNow();
+      }
+
+      bootIsland().catch((err) => {
+        document.getElementById("cyrenet-app-root").textContent =
+          "Failed to load built UI dist (run scripts/build/build-ui.sh first): " + err.message;
+      });
+    </script>
+  </body>
+</html>
