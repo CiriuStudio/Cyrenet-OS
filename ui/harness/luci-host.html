@@ -7,101 +7,363 @@ SPDX-License-Identifier: GPL-3.0-only
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cyrenet OS — LuCI Host Simulation Harness (D1 POC)</title>
+    <title>Cyrenet OS — Plan A Native M3 LuCI Shell Harness (D1 POC)</title>
+    <link rel="icon" href="../../design/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../../design/tokens/cyrenet.css" />
     <style>
-      /* Simulated ImmortalWrt / Argon LuCI host shell styles kept separate from .cyrenet-ui-root */
+      /* Simulated Plan A Native M3 LuCI Shell (pure HTML/CSS using shared --cn-* tokens; zero React) */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
       body {
         margin: 0;
-        font-family: system-ui, -apple-system, sans-serif;
-        background: #f5f5f5;
-        color: #222222;
+        font-family: var(--cn-font-sans);
+        background: var(--cn-canvas);
+        color: var(--cn-body);
+        line-height: 1.5;
       }
-      html[data-darkmode="true"] body {
-        background: #141418;
-        color: #eaeaea;
+
+      .hidden {
+        display: none !important;
       }
+
       .luci-shell {
         display: grid;
-        grid-template-columns: 240px 1fr;
+        grid-template-columns: 260px 1fr;
         min-height: 100vh;
+        transition: grid-template-columns 180ms ease;
       }
-      .luci-sidebar {
-        padding: 16px;
-        border-right: 1px solid #d4d4d8;
-        background: #ececf0;
+
+      .luci-shell.collapsed {
+        grid-template-columns: 76px 1fr;
       }
-      html[data-darkmode="true"] .luci-sidebar {
-        border-color: #32323c;
-        background: #1b1b22;
+
+      .luci-drawer {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px 12px;
+        background: var(--cn-surface-container-low);
+        border-right: 1px solid var(--cn-outline-variant);
       }
-      .luci-main {
-        padding: 20px;
+
+      .luci-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 8px;
       }
-      .luci-toolbar {
+
+      .luci-brand-text {
+        min-width: 0;
+      }
+
+      .luci-shell.collapsed .luci-brand-text,
+      .luci-shell.collapsed .nav-section-label,
+      .luci-shell.collapsed .nav-label {
+        display: none;
+      }
+
+      .luci-brand-title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--cn-foreground);
+      }
+
+      .luci-brand-sub {
+        margin: 0;
+        font-size: 12px;
+        color: var(--cn-muted-foreground);
+      }
+
+      .luci-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .nav-section-label {
+        margin: 12px 12px 4px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--cn-muted-foreground);
+      }
+
+      .nav-pill {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: var(--cn-radius-pill);
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--cn-body);
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .nav-pill:hover {
+        background: var(--cn-surface-container);
+      }
+
+      .nav-pill.active {
+        background: var(--cn-secondary-container);
+        color: var(--cn-on-secondary-container);
+        font-weight: 600;
+      }
+
+      .nav-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        background: currentColor;
+        opacity: 0.7;
+        flex-shrink: 0;
+      }
+
+      .luci-workspace {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .luci-topbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 24px;
+        background: var(--cn-surface-container-low);
+        border-bottom: 1px solid var(--cn-outline-variant);
+      }
+
+      .luci-topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .luci-breadcrumb {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--cn-foreground);
+      }
+
+      .luci-toolbar-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .host-btn,
+      .host-select {
+        height: 36px;
+        padding: 0 14px;
+        border-radius: 9999px;
+        border: 1px solid var(--cn-outline);
+        background: var(--cn-surface-container);
+        color: var(--cn-foreground);
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .host-btn:hover {
+        background: var(--cn-surface-container-high);
+      }
+
+      .host-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--cn-muted-foreground);
+      }
+
+      #maincontent {
+        padding: 20px 24px 36px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      /* Native LuCI CBI control box outside #cyrenet-app-root */
+      .cbi-map {
+        max-width: 1152px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 18px 20px;
+        border: 1px dashed var(--cn-outline-variant);
+        border-radius: var(--cn-radius-xl);
+        background: var(--cn-surface-container-low);
+      }
+
+      .cbi-map h3 {
+        margin: 0 0 12px;
+        font-size: 15px;
+        color: var(--cn-foreground);
+      }
+
+      .cbi-map table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 14px;
+        font-size: 13px;
+      }
+
+      .cbi-map th,
+      .cbi-map td {
+        text-align: left;
+        padding: 8px 10px;
+        border: 1px solid var(--cn-outline-variant);
+      }
+
+      .cbi-map th {
+        background: var(--cn-surface-container);
+        color: var(--cn-foreground);
+      }
+
+      .cbi-controls-row {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
         align-items: center;
-        margin-bottom: 16px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid #d4d4d8;
       }
-      .cbi-map {
-        margin-top: 24px;
-        padding: 12px;
-        border: 1px dashed #9ca3af;
-        border-radius: 6px;
+
+      .cbi-input {
+        height: 36px;
+        padding: 0 12px;
+        border: 1px solid var(--cn-outline);
+        border-radius: var(--cn-radius-md);
+        background: var(--cn-surface-container-lowest);
+        color: var(--cn-foreground);
       }
-      .hidden {
-        display: none;
+
+      .cbi-button {
+        height: 36px;
+        padding: 0 14px;
+        border-radius: var(--cn-radius-md);
+        border: 1px solid var(--cn-outline);
+        background: var(--cn-surface-container-high);
+        color: var(--cn-foreground);
+        cursor: pointer;
+      }
+
+      @media (max-width: 900px) {
+        .luci-shell {
+          grid-template-columns: 1fr;
+        }
+        .luci-drawer {
+          border-right: 0;
+          border-bottom: 1px solid var(--cn-outline-variant);
+        }
       }
     </style>
   </head>
   <body>
-    <div class="luci-shell">
-      <aside class="luci-sidebar">
-        <img src="../../design/assets/logo-mark.svg" alt="Cyrenet OS" width="40" height="40" />
-        <h2>ImmortalWrt LuCI Host</h2>
-        <p>Simulated Argon Shell</p>
-        <p class="hidden" id="native-hidden-sentinel">Must remain hidden</p>
-      </aside>
-      <main class="luci-main">
-        <div class="luci-toolbar">
-          <button type="button" id="toggle-theme">Toggle Host Dark Mode</button>
-          <button type="button" id="toggle-lang">Toggle Lang (zh-cn / en)</button>
-          <label>
-            Mock RPC State:
-            <select id="rpc-mode">
-              <option value="ready">ready</option>
-              <option value="forbidden">forbidden (ubus 6)</option>
-              <option value="unsupported">unsupported (ubus 4)</option>
-              <option value="error">error</option>
-            </select>
-          </label>
+    <div class="luci-shell" id="luci-shell">
+      <aside class="luci-drawer" aria-label="Native M3 LuCI Navigation Drawer">
+        <div class="luci-brand">
+          <img src="../../design/assets/logo-mark.svg" alt="Cyrenet OS" width="40" height="40" />
+          <div class="luci-brand-text">
+            <h2 class="luci-brand-title">Cyrenet OS</h2>
+            <p class="luci-brand-sub">Plan A · Native M3 LuCI Shell</p>
+          </div>
         </div>
 
-        <div id="cyrenet-app-root" class="cyrenet-ui-root" data-island="poc"></div>
+        <nav class="luci-nav">
+          <div class="nav-section-label">Overview</div>
+          <a class="nav-pill active" href="#cyrenet-app-root">
+            <span class="nav-dot" aria-hidden="true"></span>
+            <span class="nav-label">Cyrenet UI POC</span>
+          </a>
+          <a class="nav-pill" href="#native-luci-control">
+            <span class="nav-dot" aria-hidden="true"></span>
+            <span class="nav-label">Native Status Probe</span>
+          </a>
 
-        <section class="cbi-map" id="native-luci-control">
-          <h3>Native LuCI CBI Table &amp; Form Isolation Probe</h3>
-          <table border="1" cellpadding="6">
-            <thead>
-              <tr><th>Interface</th><th>Protocol</th><th>Status</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>wan</td><td>pppoe</td><td>Simulated Native Control</td></tr>
-            </tbody>
-          </table>
-          <p>
-            <input type="text" value="Native LuCI Input" aria-label="Native input" />
-            <button type="button">Native LuCI Save</button>
-          </p>
-        </section>
-      </main>
+          <div class="nav-section-label">Core Architecture</div>
+          <a class="nav-pill" href="#network" onclick="return false;">
+            <span class="nav-dot" aria-hidden="true"></span>
+            <span class="nav-label">Network</span>
+          </a>
+          <a class="nav-pill" href="#services" onclick="return false;">
+            <span class="nav-dot" aria-hidden="true"></span>
+            <span class="nav-label">Services</span>
+          </a>
+          <a class="nav-pill" href="#performance" onclick="return false;">
+            <span class="nav-dot" aria-hidden="true"></span>
+            <span class="nav-label">Performance</span>
+          </a>
+          <a class="nav-pill" href="#diagnostics" onclick="return false;">
+            <span class="nav-dot" aria-hidden="true"></span>
+            <span class="nav-label">Diagnostics</span>
+          </a>
+          <a class="nav-pill" href="#system" onclick="return false;">
+            <span class="nav-dot" aria-hidden="true"></span>
+            <span class="nav-label">System</span>
+          </a>
+        </nav>
+
+        <p class="hidden" id="native-hidden-sentinel">Must remain hidden</p>
+      </aside>
+
+      <div class="luci-workspace">
+        <header class="luci-topbar">
+          <div class="luci-topbar-left">
+            <button type="button" class="host-btn" id="toggle-drawer">Drawer</button>
+            <span class="luci-breadcrumb">Overview / Cyrenet UI POC</span>
+          </div>
+
+          <div class="luci-toolbar-actions">
+            <button type="button" class="host-btn" id="toggle-theme">Toggle Host Dark Mode</button>
+            <button type="button" class="host-btn" id="toggle-lang">Lang: zh-cn / en</button>
+            <label class="host-label">
+              Mock RPC State:
+              <select class="host-select" id="rpc-mode">
+                <option value="ready">ready</option>
+                <option value="forbidden">forbidden (ubus 6)</option>
+                <option value="unsupported">unsupported (ubus 4)</option>
+                <option value="error">error</option>
+              </select>
+            </label>
+          </div>
+        </header>
+
+        <main id="maincontent">
+          <div id="cyrenet-app-root" class="cyrenet-ui-root" data-island="poc"></div>
+
+          <section class="cbi-map" id="native-luci-control">
+            <h3>Native LuCI CBI Table &amp; Form Isolation Probe</h3>
+            <table>
+              <thead>
+                <tr><th>Interface</th><th>Protocol</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>wan</td><td>pppoe</td><td>Simulated Native Control (Outside .cyrenet-ui-root)</td></tr>
+              </tbody>
+            </table>
+            <div class="cbi-controls-row">
+              <input type="text" class="cbi-input" value="Native LuCI Input" aria-label="Native input" />
+              <button type="button" class="cbi-button">Native LuCI Save</button>
+            </div>
+          </section>
+        </main>
+      </div>
     </div>
 
     <script type="module">
       const htmlEl = document.documentElement;
+      const shellEl = document.getElementById("luci-shell");
       let currentMode = "ready";
 
       window.L = {
@@ -109,8 +371,12 @@ SPDX-License-Identifier: GPL-3.0-only
         resource: (rel) => `../dist/${rel}`,
       };
 
+      document.getElementById("toggle-drawer").addEventListener("click", () => {
+        shellEl.classList.toggle("collapsed");
+      });
+
       async function bootIsland() {
-        const res = await fetch("../dist/manifest.json");
+        const res = await fetch("../dist/manifest.json", { cache: "no-store" });
         const manifest = await res.json();
         const entry = manifest["src/entries/poc.tsx"];
         for (const cssRel of entry.css || []) {

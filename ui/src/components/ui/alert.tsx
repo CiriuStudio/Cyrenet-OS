@@ -7,14 +7,16 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
-  "cn:relative cn:w-full cn:rounded-lg cn:border cn:p-4 cn:text-sm",
+  "cn:relative cn:w-full cn:rounded-2xl cn:border cn:p-4 cn:text-sm",
   {
     variants: {
       variant: {
-        default: "cn:border-border cn:bg-card cn:text-foreground",
-        info: "cn:border-info/40 cn:bg-info/10 cn:text-foreground",
-        warning: "cn:border-warning/40 cn:bg-warning/10 cn:text-foreground",
-        destructive: "cn:border-destructive/40 cn:bg-destructive/10 cn:text-destructive",
+        default:
+          "cn:border-outline-variant cn:bg-surface-container cn:text-foreground",
+        info: "cn:border-info/30 cn:bg-tertiary-container cn:text-on-tertiary-container",
+        warning: "cn:border-warning/40 cn:bg-warning/15 cn:text-foreground",
+        destructive:
+          "cn:border-destructive/35 cn:bg-error-container cn:text-on-error-container",
       },
     },
     defaultVariants: {

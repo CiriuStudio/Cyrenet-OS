@@ -2,13 +2,15 @@
  * SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
  * SPDX-License-Identifier: GPL-3.0-only
  *
- * Scoped Tailwind CSS v4 + Cyrenet Design Token Bridge.
+ * Scoped Tailwind CSS v4 + Cyrenet x Material Design 3 Token Bridge.
  */
+
+@layer theme, base, utilities;
 
 @import "../../../design/tokens/cyrenet.css";
 @import "tailwindcss/theme.css" layer(theme) prefix(cn);
-@import "tailwindcss/utilities.css" layer(utilities) prefix(cn);
 @import "./scoped-preflight.css";
+@import "tailwindcss/utilities.css" layer(utilities) prefix(cn);
 
 @custom-variant dark (&:where(.dark, .dark *, [data-cyrenet-theme="dark"], [data-cyrenet-theme="dark"] *));
 
@@ -19,17 +21,31 @@
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+  --color-surface-low: var(--surface-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-high: var(--surface-high);
+  --color-surface-highest: var(--surface-highest);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-error-container: var(--error-container);
+  --color-on-error-container: var(--on-error-container);
   --color-border: var(--border);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-success: var(--success);
@@ -44,22 +60,36 @@
 .cyrenet-ui-root {
   --background: var(--cn-canvas);
   --foreground: var(--cn-foreground);
-  --card: var(--cn-surface);
+  --surface-low: var(--cn-surface-container-low);
+  --surface-container: var(--cn-surface-container);
+  --surface-high: var(--cn-surface-container-high);
+  --surface-highest: var(--cn-surface-container-highest);
+  --card: var(--cn-surface-container-low);
   --card-foreground: var(--cn-foreground);
-  --popover: var(--cn-surface);
+  --popover: var(--cn-surface-container-high);
   --popover-foreground: var(--cn-foreground);
   --primary: var(--cn-primary);
   --primary-foreground: var(--cn-primary-foreground);
-  --secondary: var(--cn-surface-soft);
-  --secondary-foreground: var(--cn-foreground);
-  --muted: var(--cn-surface-soft);
+  --primary-container: var(--cn-primary-container);
+  --on-primary-container: var(--cn-on-primary-container);
+  --secondary: var(--cn-secondary-container);
+  --secondary-foreground: var(--cn-on-secondary-container);
+  --secondary-container: var(--cn-secondary-container);
+  --on-secondary-container: var(--cn-on-secondary-container);
+  --tertiary-container: var(--cn-tertiary-container);
+  --on-tertiary-container: var(--cn-on-tertiary-container);
+  --muted: var(--cn-surface-container);
   --muted-foreground: var(--cn-muted-foreground);
-  --accent: var(--cn-surface-soft);
+  --accent: var(--cn-surface-container-high);
   --accent-foreground: var(--cn-foreground);
   --destructive: var(--cn-danger);
   --destructive-foreground: #FFFFFF;
-  --border: var(--cn-border);
-  --input: var(--cn-border);
+  --error-container: var(--cn-error-container);
+  --on-error-container: var(--cn-on-error-container);
+  --border: var(--cn-outline-variant);
+  --outline: var(--cn-outline);
+  --outline-variant: var(--cn-outline-variant);
+  --input: var(--cn-outline);
   --ring: var(--cn-focus-ring);
   --success: var(--cn-success);
   --warning: var(--cn-warning);

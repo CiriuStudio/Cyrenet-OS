@@ -170,7 +170,19 @@ describe("D1 UI Integration POC contracts", () => {
       .join("\n");
 
     expect(cssText).toContain(".cyrenet-ui-root");
-    expect(cssText).toMatch(/\.cn\\:bg-card/);
+    expect(cssText).toContain("--cn-surface-container-low");
+    expect(cssText).toMatch(/\.cn\\:bg-surface-low/);
+    expect(cssText).toMatch(/\.cn\\:bg-primary/);
+    expect(cssText).toMatch(/\.cn\\:bg-secondary-container/);
+    expect(cssText).toMatch(/\.cn\\:border-outline/);
+
+    const baseLayerIdx = cssText.indexOf("@layer base{");
+    const utilitiesLayerIdx = cssText.indexOf("@layer utilities{");
+    expect(baseLayerIdx).toBeGreaterThanOrEqual(0);
+    expect(utilitiesLayerIdx).toBeGreaterThan(baseLayerIdx);
+    const buttonResetIdx = cssText.indexOf(".cyrenet-ui-root button");
+    expect(buttonResetIdx).toBeGreaterThan(baseLayerIdx);
+    expect(buttonResetIdx).toBeLessThan(utilitiesLayerIdx);
 
     // Must not emit Tailwind Preflight global unprefixed resets or leak theme tokens on :root
     expect(cssText).not.toMatch(/(?:^|[}])body\{/);

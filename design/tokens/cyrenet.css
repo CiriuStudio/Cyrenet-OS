@@ -2,8 +2,8 @@
  * SPDX-FileCopyrightText: 2026 Cyrenet OS Contributors
  * SPDX-License-Identifier: Apache-2.0
  *
- * Cyrenet OS Shared Design Tokens (UIDESIGN.md §3 / Layer C).
- * Single source of truth for both Layer A (Argon LuCI Shell) and Layer B (React/shadcn Islands).
+ * Cyrenet OS Shared Design Tokens (UIDESIGN.md §3 / Cyrenet x Material Design 3).
+ * Single source of truth for both Layer A (Native M3 LuCI Shell) and Layer B (React/M3 Feature Islands).
  */
 
 :root,
@@ -14,6 +14,8 @@
   --cn-radius-md: 8px;
   --cn-radius-lg: 12px;
   --cn-radius-xl: 16px;
+  --cn-radius-pill: 9999px;
+  --cn-radius-dialog: 28px;
   --cn-chart-download: var(--cn-brand-ice);
   --cn-chart-upload: var(--cn-primary);
 }
@@ -25,14 +27,29 @@
   --cn-surface: #FFFFFF;
   --cn-surface-soft: #F4F0FB;
   --cn-surface-raised: #FBFAFF;
+  --cn-surface-container-lowest: #FFFFFF;
+  --cn-surface-container-low: #F7F4FC;
+  --cn-surface-container: #F2ECF9;
+  --cn-surface-container-high: #ECE4F6;
+  --cn-surface-container-highest: #E5DBF2;
   --cn-sidebar: #F7F4FC;
   --cn-border: #E6E1F0;
+  --cn-outline: #7D7591;
+  --cn-outline-variant: #DFD8EC;
   --cn-foreground: #272238;
   --cn-body: #3A354B;
   --cn-muted-foreground: #615B73;
   --cn-primary: #7653B4;
   --cn-primary-hover: #68469F;
   --cn-primary-foreground: #FFFFFF;
+  --cn-primary-container: #E9DDF7;
+  --cn-on-primary-container: #2D184F;
+  --cn-secondary-container: #E6E0F4;
+  --cn-on-secondary-container: #2B2440;
+  --cn-tertiary-container: #DFEEF9;
+  --cn-on-tertiary-container: #143654;
+  --cn-error-container: #FADCE3;
+  --cn-on-error-container: #5F1426;
   --cn-brand-pink: #D69BCA;
   --cn-brand-purple-soft: #E9DDF7;
   --cn-brand-ice: #A6C8EB;
@@ -52,14 +69,29 @@
   --cn-surface: #1C1A29;
   --cn-surface-soft: #272438;
   --cn-surface-raised: #302C41;
+  --cn-surface-container-lowest: #0E0D16;
+  --cn-surface-container-low: #191725;
+  --cn-surface-container: #1E1C2D;
+  --cn-surface-container-high: #28253A;
+  --cn-surface-container-highest: #332F47;
   --cn-sidebar: #191725;
   --cn-border: #39344A;
+  --cn-outline: #928AA6;
+  --cn-outline-variant: #3D3850;
   --cn-foreground: #F6F3FC;
   --cn-body: #E2DBEE;
   --cn-muted-foreground: #BAB2CC;
   --cn-primary: #CDB1F6;
   --cn-primary-hover: #DFC9FD;
   --cn-primary-foreground: #1F1631;
+  --cn-primary-container: #4F367E;
+  --cn-on-primary-container: #EFE5FF;
+  --cn-secondary-container: #352F4B;
+  --cn-on-secondary-container: #E6DEF8;
+  --cn-tertiary-container: #1F3E5C;
+  --cn-on-tertiary-container: #D3E9FC;
+  --cn-error-container: #631F31;
+  --cn-on-error-container: #FFD9E0;
   --cn-brand-pink: #F0B2DC;
   --cn-brand-purple-soft: #3A3150;
   --cn-brand-ice: #A2C8EF;
@@ -76,14 +108,29 @@
     --cn-surface: #1C1A29;
     --cn-surface-soft: #272438;
     --cn-surface-raised: #302C41;
+    --cn-surface-container-lowest: #0E0D16;
+    --cn-surface-container-low: #191725;
+    --cn-surface-container: #1E1C2D;
+    --cn-surface-container-high: #28253A;
+    --cn-surface-container-highest: #332F47;
     --cn-sidebar: #191725;
     --cn-border: #39344A;
+    --cn-outline: #928AA6;
+    --cn-outline-variant: #3D3850;
     --cn-foreground: #F6F3FC;
     --cn-body: #E2DBEE;
     --cn-muted-foreground: #BAB2CC;
     --cn-primary: #CDB1F6;
     --cn-primary-hover: #DFC9FD;
     --cn-primary-foreground: #1F1631;
+    --cn-primary-container: #4F367E;
+    --cn-on-primary-container: #EFE5FF;
+    --cn-secondary-container: #352F4B;
+    --cn-on-secondary-container: #E6DEF8;
+    --cn-tertiary-container: #1F3E5C;
+    --cn-on-tertiary-container: #D3E9FC;
+    --cn-error-container: #631F31;
+    --cn-on-error-container: #FFD9E0;
     --cn-brand-pink: #F0B2DC;
     --cn-brand-purple-soft: #3A3150;
     --cn-brand-ice: #A2C8EF;

@@ -13,18 +13,20 @@ SPDX-License-Identifier: Apache-2.0
 
 ## 0. 设计决策摘要（必须先读）
 
-Cyrenet OS 的目标是：**拥有商业网络产品级别的一致性和完成度，同时保留 ImmortalWrt/OpenWrt 原生的透明、可靠、可维护性。** 整套 UI 必须遵守 KISS：信息充分但不堆砌、功能丰富但默认不打扰、外观精致但不牺牲排障效率。
+Cyrenet OS 的目标是：**拥有商业网络产品级别的一致性和完成度，同时保留 ImmortalWrt/OpenWrt 原生的透明、可靠、可维护性。** 整套 UI 遵循 KISS，并吸收 **Material Design 3（M3）** 的分级表面（Surface Container）、按钮强调层级与 Canonical Pane 排布规范，同时保留 Cyrenet 自有的**雾白 / 粉紫 / 浅紫 / 冰蓝 / 墨紫**色彩标识。
 
-**本项目明确采用两套不同的 UI 实现体系，共享一套 Cyrenet Design Tokens：**
+**本项目明确采用双层 UI 路线（V1.0 执行方案 A；方案 B 归档为后续进阶备选），共享一套 Cyrenet × M3 Design Tokens：**
 
 | 责任 | 技术与名称 | 实现边界 |
 |---|---|---|
-| **A. LuCI/Argon 主题层** | `luci-theme-cyrenet`，Fork Argon 3.x | 登录页、顶栏、侧边导航、原生 LuCI 页面外观、第三方 LuCI 页面兼容、全局主题模式 |
-| **B. Cyrenet 原创功能 UI 层** | React + TypeScript + **shadcn/ui** + Tailwind CSS + Vite | DNS Center、Diagnostics、Backup、Updater、Performance、IPv6 Service Center、自研 Dashboard 的业务组件 |
-| **C. 共享视觉契约** | `cyrenet-tokens`（CSS 变量及设计文档） | 颜色、字体、栅格、圆角、阴影、图表、状态语义、深浅模式 |
+| **A. 原生 M3 LuCI 壳层（方案 A，V1.0 生效）** | `themes/luci-theme-cyrenet`，参考 Argon 3.x 布局结构 | 纯 `ucode` 模板 + `--cn-*` Token：登录页、顶栏、M3 侧边抽屉（Navigation Drawer）、原生 LuCI 与第三方插件页兼容、全局明暗主题 |
+| **B. Cyrenet 原创功能 UI 层** | React + TypeScript + Radix/shadcn 无头原语 + Tailwind CSS v4 + Vite | DNS Center、Diagnostics、Backup、Updater、Performance、IPv6 Service Center、自研 Dashboard；采用 M3 分级容器、列表项与按钮层级 |
+| **C. 共享视觉契约** | `design/tokens/cyrenet.css`（`--cn-*` 与 M3 Tonal 角色） | 表面阶梯、强调容器、字体、栅格、圆角、阴影、图表、状态语义、深浅模式 |
 | **D. 系统接口层** | LuCI/ubus/rpcd/UCI；必要时采用独立受限的后端适配器 | 权限、数据获取、配置读写、操作审计、任务进度与错误处理 |
 
-**不得混淆：** Argon 是 LuCI 的主题实现；shadcn/ui 是 React 组件源码集合，**不是 LuCI 原生主题，也不能直接贴入 LuCI JS View 使用**。两者视觉统一，但在代码、构建链、权限和生命周期上保持隔离。V1 不重写 LuCI 整站为 React SPA，也不额外部署常驻 Node.js 前端服务器。
+> **方案演进边界：** V1.0 采用**方案 A**，确保首屏零额外 JS 重载成本并对 ImmortalWrt 25.12 第三方插件 100% 原生兼容；**方案 B**（使用 React + M3 直接重写 Argon 导航壳层、中间保留 `#maincontent` 插槽挂载 LuCI 页面）已作为后续进阶路线归档记录于 [ADR-0002](docs/adr/0002-dual-layer-ui-architecture.md)，暂不在 V1.0 实施。
+
+**不得混淆：** LuCI 壳层使用原生 `ucode` + CSS Token；React/shadcn 是 `ui/` 中编译期打包的功能岛组件源码集合，**不是 LuCI 整站 SPA，也不能将未经编译的 TSX 直接贴入 LuCI View**。V1.0 不在路由器上部署常驻 Node.js 前端服务器。
 
 **决策优先级**：网络安全与恢复能力 > 行为正确性 > 可读性与无障碍 > 一致性 > 性能 > 视觉装饰。
 
@@ -77,9 +79,9 @@ Cyrenet 的品牌色由此前项目决策确定：**低饱和粉紫、浅紫、�
 
 ## 2. 双层 UI 架构与责任边界
 
-### 2.1 层 A：基于 Argon 的 LuCI 外壳
+### 2.1 层 A：参考 Argon 结构的原生 M3 LuCI 壳层（方案 A）
 
-**定位：** `luci-theme-cyrenet` 由 Argon 上游源码 Fork，负责登录、菜单、布局、全站基础风格和传统 LuCI 页面兼容。优先延续 Argon 的现有机制，不大规模侵入 OpenWrt LuCI 源码。
+**定位：** `luci-theme-cyrenet`（方案 A）以 ImmortalWrt 25.12 原生 LuCI 机制为基础，参考 Argon 3.x 的可折叠侧栏/顶栏/登录信息架构，以简洁 `ucode` 模板 + `--cn-*` M3 Design Tokens 构建干净轻量的壳层，**不在导航壳层引入 React 运行时**；原“React + M3 重写 Argon 导航壳（方案 B）”归档为 V1.0 后续进阶可选路线。
 
 **允许修改：**
 
@@ -210,11 +212,15 @@ Cyrenet 的品牌色由此前项目决策确定：**低饱和粉紫、浅紫、�
 | `danger` | `#FC9AAB` | 错误与危险 |
 | `focus-ring` | `#D9C2FA` | 键盘焦点环 |
 
-### 3.4 CSS 变量实现契约
+### 3.4 CSS 变量、M3 Tonal 容器与作用域层叠契约
 
-推荐**以 `--cn-*` 作为源 token 命名空间**；Argon 主题 CSS 与 React/shadcn 样式都从这里映射，避免分别硬编码两套视觉主题。
+自研 token 统一使用 `--cn-*` 命名空间，并按 Material Design 3 补充 5 级表面阶梯与强调容器角色，由 [design/tokens/cyrenet.css](design/tokens/cyrenet.css) 作为两层唯一视觉真源：
 
-以下为实现样例（不是完整生产 CSS）：
+- **表面阶梯**：`--cn-surface-container-lowest` / `-low` / `default` / `-high` / `-highest`，结合 `--cn-outline` 与 `--cn-outline-variant` 清晰区隔画布、卡片、KPI 块与高海拔弹层（Dialog 圆角 `28px`）。
+- **按钮与状态容器**：提供 `--cn-primary-container`、`--cn-secondary-container`（Filled Tonal）、`--cn-tertiary-container`（信息提示）与 `--cn-error-container`（高危柔和容器）及对应的 `--cn-on-*-container` 文本色。
+- **CSS Cascade 层序铁律**：React 侧在 `ui/src/styles/index.css` 中显式声明 `@layer theme, base, utilities;`，必须将 `scoped-preflight.css`（`.cyrenet-ui-root` 基础重置）封装在 **`@layer base`** 内，并确保任何 `.cyrenet-ui-root` 元素重置**不得未分层（unlayered）写在 `@layer utilities` 之后**，避免覆盖 `cn:bg-*`、`cn:border*` 等工具类。
+
+核心映射实现样例（完整定义见 `design/tokens/cyrenet.css`）：
 
 ```css
 /* shared/tokens/cyrenet.css — 两层复用；由最终构建流程分发 */
